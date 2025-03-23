@@ -1,0 +1,18 @@
+# Use Node.js as the base image
+FROM node:18-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
+
+# Copy the rest of the app's source code
+COPY . .
+
+# Expose the Vite development server's port
+EXPOSE 5173
+
+# Start Vite in development mode
+CMD ["npm", "run", "dev", "--", "--host"]
