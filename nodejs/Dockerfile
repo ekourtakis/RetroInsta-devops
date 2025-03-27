@@ -1,5 +1,9 @@
-FROM node:20-alpine
+FROM node:18-alpine
+
 WORKDIR /nodejs
-COPY package*.json .
-RUN npm i
+
+# Copy package.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
+
 CMD ["npm", "start"]

@@ -23,6 +23,7 @@ services:
     volumes:
       - ./nodejs:/nodejs
       - server-v-node-modules:/server/node_modules
+      - /nodejs/node_modules  # Avoids overwriting node_modules inside the container
     depends_on:
       - mongo
   mongo:    # User Database service
@@ -30,9 +31,6 @@ services:
     container_name: ${DATABASE_HOST}
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
-    build:
-      context: ./user_db
-      dockerfile: Dockerfile
     env_file: .env
     volumes:
       - database-v:/data/db
