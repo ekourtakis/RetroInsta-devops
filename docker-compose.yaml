@@ -46,9 +46,6 @@ services:
       - "9001:9001" # MinIO Console
     volumes:
       - minio-data:/data
-    environment:
-      MINIO_ROOT_USER: RetroInstaRootUser
-      MINIO_ROOT_PASSWORD: V7t#rP@zB9w!qQ2y$6E
 
 volumes:
   database-v:
