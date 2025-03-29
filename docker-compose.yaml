@@ -20,7 +20,7 @@ services:
       - "9000:9000" # MinIO API
       - "9001:9001" # MinIO Console
     volumes:
-      - ./minio/data:/data
+      - minio-data:/data
     environment:
       MINIO_ROOT_USER: RetroInstaRootUser
       MINIO_ROOT_PASSWORD: V7t#rP@zB9w!qQ2y$6E
@@ -41,6 +41,7 @@ services:
       - /nodejs/node_modules  # Avoids overwriting node_modules inside the container
     depends_on:
       - mongo
+  
   mongo:    # User Database service
     image: mongo:latest
     container_name: ${DATABASE_HOST}
@@ -55,3 +56,5 @@ volumes:
     name: "server-v-node-modules"
   database-v:
     name: "database-v"
+  minio-data:
+    name: "minio-data"
