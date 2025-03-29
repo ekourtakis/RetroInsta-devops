@@ -1,6 +1,5 @@
 FROM quay.io/minio/minio:latest
 
-# Define environment variables (optional - can be moved to docker-compose)
 ENV MINIO_ROOT_USER RetroInstaRootUser
 ENV MINIO_ROOT_PASSWORD V7t#rP@zB9w!qQ2y$6E
 
