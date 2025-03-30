@@ -33,7 +33,6 @@ services:
       - ${SERVER_PORT}:${SERVER_PORT}
     build:
       context: ./nodejs
-      dockerfile: Dockerfile
     env_file: .env
     volumes:
       - ./nodejs:/nodejs
@@ -47,8 +46,7 @@ services:
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
-      context: ./nodejs
-      dockerfile: Dockerfile
+      context: ./user_db
     env_file: .env
     volumes:
       - database-v:/data/db
