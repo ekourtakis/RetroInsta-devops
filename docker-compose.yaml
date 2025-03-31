@@ -40,12 +40,13 @@ services:
       - /nodejs/node_modules  # Avoids overwriting node_modules inside the container
     depends_on:
       - mongo
-  mongo:    # User Database service
+
+  mongo:    # Database service
     container_name: mongo
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
-      context: ./user_db
+      context: ./mongo
     env_file: .env
     volumes:
       - database-v:/data/db
