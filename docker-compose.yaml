@@ -41,8 +41,7 @@ services:
     depends_on:
       - mongo
   mongo:    # User Database service
-    image: mongo:latest
-    container_name: ${DATABASE_HOST}
+    container_name: mongo
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
