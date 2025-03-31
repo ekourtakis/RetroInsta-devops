@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "mongodb": "^6.15.0",
+    "mongoose": "^8.13.1",
     "ronin-mocks": "^0.1.11",
     "ronin-server": "^0.1.3"
   }
