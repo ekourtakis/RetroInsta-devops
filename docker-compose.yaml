@@ -25,10 +25,9 @@ services:
       - /nodejs/node_modules
     depends_on:
       - mongo
-  
-  mongo:    # User Database service
-    image: mongo:latest
-    container_name: ${DATABASE_HOST}
+
+  mongo:    # Database service
+    container_name: mongo
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
