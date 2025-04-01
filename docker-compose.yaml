@@ -26,8 +26,7 @@ services:
     depends_on:
       - mongo
 
-  mongo:    # Database service
-    container_name: mongo
+mongo:    # Database service
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
