@@ -12,32 +12,29 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ensures file change detection works in Docker
     
-  nodejs:   # Node (backend) service 
+  back-end:   # Node server 
     image: server:1.0.0
-    container_name: ${SERVER_HOST}
+    container_name: back-end
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     build:
-      context: ./nodejs
+      context: ./back-end
     env_file: .env
     volumes:
-      - ./nodejs:/nodejs
-      - server-v-node-modules:/server/node_modules
-      - /nodejs/node_modules  # Avoids overwriting node_modules inside the container
+      - ./back-end:/nodejs
+      - /nodejs/node_modules
     depends_on:
       - mongo
-  
-  mongo:    # User Database service
-    image: mongo:latest
-    container_name: ${DATABASE_HOST}
+
+  mongo:    # Database service
+    container_name: mongo
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
-      context: ./user_db
+      context: ./mongo
     env_file: .env
     volumes:
       - database-v:/data/db
-  
   minio:
     container_name: minio
     build:
@@ -50,8 +47,6 @@ services:
       - minio-data:/data
 
 volumes:
-  server-v-node-modules:
-    name: "server-v-node-modules"
   database-v:
     name: "database-v"
   minio-data:
