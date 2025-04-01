@@ -26,7 +26,8 @@ services:
     depends_on:
       - mongo
 
-mongo:    # Database service
+  mongo:    # Database service
+    container_name: mongo
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     build:
@@ -34,7 +35,6 @@ mongo:    # Database service
     env_file: .env
     volumes:
       - database-v:/data/db
-  
   minio:
     container_name: minio
     build:
