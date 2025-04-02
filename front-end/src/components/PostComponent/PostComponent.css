@@ -1,0 +1,67 @@
+/* src/components/Post/Post.css */
+
+.post {
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Slightly smaller radius */
+  overflow: hidden;
+  background: white;
+  margin-bottom: 20px; /* Add margin between posts if needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px; /* Adjust padding */
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px; /* Slightly smaller avatar */
+  height: 32px;
+  border-radius: 50%; /* Circular avatar */
+  object-fit: cover; /* Ensure image covers the area */
+}
+
+.username {
+  font-weight: 600; /* Slightly bolder */
+  font-size: 0.9rem;
+}
+
+.post-image {
+  width: 100%;
+  display: block; /* Remove extra space below image */
+  /* Removed border-radius as .post handles overflow */
+  /* Removed margin-top, handled by container padding/gap */
+}
+
+.post-content {
+  padding: 10px 15px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 15px; /* More spacing */
+  font-size: 22px; /* Slightly larger icons */
+  margin-bottom: 8px; /* Space below actions */
+}
+
+.post-actions span {
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out; /* Add subtle interaction feedback */
+}
+
+.post-actions span:hover {
+    transform: scale(1.1);
+}
+
+.post-description {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0; /* Remove default paragraph margin */
+}
+
+/* Ensure the username in the description matches the header style if needed */
+.post-description .username {
+    margin-right: 5px; /* Space between username and description text */
+}
