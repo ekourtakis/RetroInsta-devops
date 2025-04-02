@@ -6,6 +6,9 @@ For individuals who want to share and view photos, RetroInsta is a social media 
 
 ## How to build and run
 Link to our Trello project board [here](https://trello.com/b/E8lh6y8I/retroinsta).
+- Clone this repo.
+- Run this command in the project's root directory (`RetroInsta` by default): `cat .env.example > .env`.
+- Edit the new `.env` file based on the instructions in the comments.
 - Install Docker. The easiest way is to install [Docker Desktop](https://docs.docker.com/desktop/).
 - Open Docker Desktop to ensure the Docker daemon/engine is running or do so [manually](https://docs.docker.com/engine/daemon/start/).
 - Run the following command from the project's root directory (`RetroInsta` by default) to build a Docker image and start it in a container: `docker compose up`.
