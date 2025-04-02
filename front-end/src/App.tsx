@@ -6,14 +6,6 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <div className="cameraicon">
-        <img 
-          src={`/testimage/cameraicon.webp`} 
-          alt="Camera" 
-          className="camera-icon" 
-        />
-      </div>
-      <h1>RetroInstagram</h1>
       <div className="Posts">
         <Feed />
       </div>
