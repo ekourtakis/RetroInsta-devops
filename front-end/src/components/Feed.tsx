@@ -1,7 +1,16 @@
 import React from "react";
 import "./Feed.css"; // Import the CSS file
 
-const posts = [
+// we need this for now, but later we'll move this model to a dedicated folder 
+interface Post {
+  id: number;
+  username: string;
+  avatar: string;
+  image: string;
+  description: string;
+}
+
+const posts: Post[] = [
   {
     id: 1,
     username: "first_name",
@@ -18,7 +27,14 @@ const posts = [
   },
 ];
 
-const Post = ({ username, avatar, image, description }) => {
+interface PostProps {
+  username: string;
+  avatar: string;
+  image: string;
+  description: string;
+}
+
+const Post: React.FC<PostProps> = ({ username, avatar, image, description }) => {
   return (
     <div className="post">
       <div className="post-header">
@@ -39,7 +55,7 @@ const Post = ({ username, avatar, image, description }) => {
   );
 };
 
-const Feed = () => {
+const Feed: React.FC = () => {
   return (
     <div className="feed">
       {posts.map((post) => (
