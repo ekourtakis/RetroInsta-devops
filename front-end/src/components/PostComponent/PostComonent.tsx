@@ -7,7 +7,7 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
-  const { username, avatar, image, description } = post;
+  const { username, profilePicPath: avatar, imagePath: image, description } = post;
 
   return (
     <div className="post">

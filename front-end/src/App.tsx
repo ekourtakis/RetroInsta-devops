@@ -7,15 +7,15 @@ const posts: Post[] = [
   {
     id: 1,
     username: "first_name",
-    avatar: "/testimage/avatar.jpeg",
-    image: "/testimage/mountain.jpeg",
+    profilePicPath: "/testimage/avatar.jpeg",
+    imagePath: "/testimage/mountain.jpeg",
     description: "description 1!",
   },
   {
     id: 2,
     username: "second284",
-    avatar: "/testimage/man.jpeg",
-    image: "/testimage/bridge.jpeg",
+    profilePicPath: "/testimage/man.jpeg",
+    imagePath: "/testimage/bridge.jpeg",
     description: "this sentence is a test",
   },
 ]

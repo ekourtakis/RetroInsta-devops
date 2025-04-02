@@ -1,7 +1,7 @@
 export interface Post {
     id: number;
     username: string;
-    avatar: string;
-    image: string;
+    profilePicPath: string;
+    imagePath: string;
     description: string;
 }
