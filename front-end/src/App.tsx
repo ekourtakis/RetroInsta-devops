@@ -1,6 +1,6 @@
 import './App.css';
 import Navbar from "./components/Navbar/Navbar";
-import Feed from "./components/Feed/Feed";
+import Feed from "./components/PostFeed/PostFeed";
 
 function App() {
   return (

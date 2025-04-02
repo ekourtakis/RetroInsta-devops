@@ -1,5 +1,5 @@
 import React from "react";
-import "./Feed.css";
+import "./PostFeed.css";
 import { Post } from '../../models/Post';
 import PostComponent from '../PostComponent/PostComonent';
 
