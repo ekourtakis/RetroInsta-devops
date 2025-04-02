@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
 import './App.css';
-import Navbar from "./components/Navbar";
-import Feed from "./components/Feed";
+import Navbar from "./components/Navbar/Navbar";
+import PostFeed from "./components/PostFeed/PostFeed";
+import{ Post } from "./models/Post"
+
+const posts: Post[] = [
+  {
+    id: 1,
+    username: "first_name",
+    profilePicPath: "/testimage/avatar.jpeg",
+    imagePath: "/testimage/mountain.jpeg",
+    description: "description 1!",
+  },
+  {
+    id: 2,
+    username: "second284",
+    profilePicPath: "/testimage/man.jpeg",
+    imagePath: "/testimage/bridge.jpeg",
+    description: "this sentence is a test",
+  },
+]
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="App">
       <Navbar />
-      <div className="cameraicon">
-        <img 
-          src={`/testimage/cameraicon.webp`} 
-          alt="Camera" 
-          className="camera-icon" 
-        />
-      </div>
-      <h1>RetroInstagram</h1>
       <div className="Posts">
-        <Feed />
+        <PostFeed posts={posts} />
       </div>
     </div>
   );
