@@ -4,7 +4,7 @@ import { Post } from '../../models/Post';
 import PostComponent from '../PostComponent/PostComponent';
 
 interface PostFeedProps {
-  posts: Post[];
+  posts: Post[]
 }
 
 const Feed: React.FC<PostFeedProps> = ({ posts }) => {

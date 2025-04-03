@@ -9,16 +9,11 @@ interface PostComponentProps {
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
   const { username, profilePicPath: avatar, imagePath: image, description } = post;
   
-  // State for likes
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-
-  // State for comment input and count
-  const [comment, setComment] = useState("");
-  const [commentCount, setCommentCount] = useState(3);  // Initialize with 3 hardcoded comments
   const [comments, setComments] = useState<string[]>([
-    "Great post! Love the picture.", 
-  ]);  // Hardcoded comments
+  ]);
+  const [comment, setComment] = useState("");
 
   const handleLike = () => {
     setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
@@ -31,33 +26,48 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
-      setComments([...comments, comment]);  // Add new comment to the list
-      setCommentCount((prevCount) => prevCount + 1);  // Increment comment count
-      setComment("");  // Clear the input field
+      setComments((prevComments) => [...prevComments, comment]); 
+      setComment("");  
     }
   };
 
   return (
     <div className="post">
       <div className="post-header">
-        <img className="avatar" src={avatar} alt={`${username}'s avatar`} />
+        {avatar ? (
+          <img className="avatar" src={avatar} alt={`${username}'s avatar`} />
+        ) : (
+          <div className="avatar-placeholder">👤</div>
+        )}
         <span className="username">{username}</span>
       </div>
-      <img className="post-image" src={image} alt={`Post by ${username}`} />
+
+      {image ? (
+        <img className="post-image" src={image} alt={`Post by ${username}`} />
+      ) : (
+        <div className="image-placeholder">📷 No Image</div>
+      )}
+
       <div className="post-content">
+        <p className="post-description">{description}</p>
+
+        {/* Like & Comment Bar */}
         <div className="post-actions">
-          <button 
-            className={`like-button ${isLiked ? "liked" : ""}`} 
-            onClick={handleLike}
-            aria-label="Like post"
-          >
-            ❤️ {likes}
-          </button>
-          
+          <div className="like-section">
+            <button 
+              className={`like-button ${isLiked ? "liked" : ""}`} 
+              onClick={handleLike}
+              aria-label="Like post"
+            >
+              ❤️
+            </button>
+            <span className="like-count">{likes}</span>
+          </div>
+
           {/* Comment section */}
           <div className="comment-section">
             <span className="comment-icon" role="button" aria-label="Comment on post">💬</span>
-            <span className="comment-count">{commentCount}</span> {/* Display comment count */}
+            <span className="comment-count">{comments.length}</span>
             <input 
               type="text" 
               className="comment-input"
@@ -75,7 +85,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
           </div>
         </div>
 
-        {/* Display hardcoded comments */}
+        {/* Display Comments */}
         <div className="comments-list">
           {comments.map((comment, index) => (
             <div key={index} className="comment">
@@ -84,8 +94,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
             </div>
           ))}
         </div>
-
-        <p className="post-description">{description}</p>
       </div>
     </div>
   );
