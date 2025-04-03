@@ -20,6 +20,9 @@ const app = express();
 // Enable CORS to allow requests from your React frontend
 app.use(cors());
 
+// Middleware to parse JSON request bodies
+app.use(express.json());
+
 async function main() {
   try {
     // Connect to Mongo
@@ -31,19 +34,19 @@ async function main() {
     const collection = db.collection(DATABASE_COLLECTION);
 
     // FOR TESTING ONLY: resets collection
-    collection.drop();
+    // collection.drop();
 
     // Adds dummy user data to empty collection
     const count = await collection.count();
     if (count === 0) {
       collection.insertMany([
-        { id: 1, username: "abby123", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/mountain.jpeg", description: "Check out this beautiful photo!" },
-        { id: 2, username: "benny_2000", profilePicPath: "/testimage/man.jpeg", imagePath: "/testimage/bridge.jpeg", description: "This is a description! Cool beans." },
-        { id: 3, username: "char1ieIsC00L", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/man.jpeg", description: "hi benny" }
+        { username: "abby123", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/mountain.jpeg", description: "Check out this beautiful photo!" },
+        { username: "benny_2000", profilePicPath: "/testimage/man.jpeg", imagePath: "/testimage/bridge.jpeg", description: "This is a description! Cool beans." },
+        { username: "char1ieIsC00L", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/man.jpeg", description: "hi benny :)" }
       ]);
     }
 
-    // API route to fetch data
+    // GET endpoint route to fetch all posts
     app.get("/api/data", async (req, res) => {
       try {
         const data = await collection.find({}).toArray();
@@ -51,6 +54,18 @@ async function main() {
       } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    // POST endpoint route to add a new post
+    app.post("/api/data", async (req, res) => {
+      try {
+        const newPost = req.body;
+        const result = await collection.insertOne(newPost);
+        res.status(201).json(result);       // Return the inserted post to frontend
+      } catch (error) {
+        console.error("Error adding post:", error);
+        res.status(500).json({ error: "Failed to add post" });
       }
     });
 
