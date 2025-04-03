@@ -13,13 +13,28 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
+  // State for comment input and count
+  const [comment, setComment] = useState("");
+  const [commentCount, setCommentCount] = useState(3);  // Initialize with 3 hardcoded comments
+  const [comments, setComments] = useState<string[]>([
+    "Great post! Love the picture.", 
+  ]);  // Hardcoded comments
+
   const handleLike = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
+    setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
     setIsLiked(!isLiked);
+  };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handleCommentSubmit = () => {
+    if (comment.trim()) {
+      setComments([...comments, comment]);  // Add new comment to the list
+      setCommentCount((prevCount) => prevCount + 1);  // Increment comment count
+      setComment("");  // Clear the input field
+    }
   };
 
   return (
@@ -38,8 +53,38 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
           >
             ❤️ {likes}
           </button>
-          <span className="comment" role="button" aria-label="Comment on post">💬</span>
+          
+          {/* Comment section */}
+          <div className="comment-section">
+            <span className="comment-icon" role="button" aria-label="Comment on post">💬</span>
+            <span className="comment-count">{commentCount}</span> {/* Display comment count */}
+            <input 
+              type="text" 
+              className="comment-input"
+              placeholder="Write a comment..."  
+              value={comment}
+              onChange={handleCommentChange}
+            />
+            <button 
+              className="comment-submit"
+              onClick={handleCommentSubmit}
+              aria-label="Submit comment"
+            >
+              Post
+            </button>
+          </div>
         </div>
+
+        {/* Display hardcoded comments */}
+        <div className="comments-list">
+          {comments.map((comment, index) => (
+            <div key={index} className="comment">
+              <span className="comment-author">User {index + 1}: </span>
+              <span className="comment-text">{comment}</span>
+            </div>
+          ))}
+        </div>
+
         <p className="post-description">{description}</p>
       </div>
     </div>
