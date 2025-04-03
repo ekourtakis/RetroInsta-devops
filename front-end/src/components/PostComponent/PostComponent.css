@@ -4,6 +4,7 @@
   padding: 10px;
   margin-bottom: 20px;
   background-color: #fff;
+  position: relative;
 }
 
 .post-header {
@@ -87,8 +88,8 @@
 .comments-list {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Space between comments */
-  text-align: left; /* Align the comments to the left */
+  gap: 10px; 
+  text-align: left;
 }
 
 .comment-author {
@@ -130,4 +131,13 @@
 
 .comment-submit:active {
   transform: scale(0.95);
+}
+
+/* Time */
+
+.timestamp {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  color: #888;
 }

@@ -8,12 +8,14 @@ interface PostComponentProps {
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
   const { username, profilePicPath: avatar, imagePath: image, description } = post;
-  
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-  const [comments, setComments] = useState<string[]>([
-  ]);
+  const [comments, setComments] = useState<string[]>([]);
   const [comment, setComment] = useState("");
+
+  /* hardcoded timestamp will be changed */
+  const timestamp = "April 3, 2025 2:00 PM";
+
 
   const handleLike = () => {
     setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
@@ -94,6 +96,8 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
             </div>
           ))}
         </div>
+
+        <div className="timestamp">{timestamp}</div>
       </div>
     </div>
   );
