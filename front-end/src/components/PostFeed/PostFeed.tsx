@@ -1,7 +1,7 @@
 import React from "react";
 import "./PostFeed.css";
 import { Post } from '../../models/Post';
-import PostComponent from '../PostComponent/PostComonent';
+import PostComponent from '../PostComponent/PostComponent';
 
 interface PostFeedProps {
   posts: Post[]
