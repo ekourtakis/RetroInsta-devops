@@ -9,7 +9,7 @@ services:
       - "5173:5173"  # Vite dev server port for HMR
     volumes:
       - ./front-end:/app  # Mounts the front-end directory for live updates
-      # - /app/node_modules  # Avoids overwriting node_modules inside the container
+      - /app/node_modules  # Avoids overwriting node_modules inside the container
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ensures file change detection works in Docker
       - VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
