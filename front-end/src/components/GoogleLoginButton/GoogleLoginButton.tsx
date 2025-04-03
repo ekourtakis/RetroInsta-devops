@@ -21,20 +21,21 @@ export default function GoogleLoginButton({ onLoginSuccess, onLoginError }: Goog
     console.log("Google login success. Credential response: ", credentialResponse);
     const idToken = credentialResponse.credential;
 
-    if (idToken) {
-      console.log("ID token JWT: ", idToken);
-      try {
-        const decodedToken = jwtDecode<GoogleIdTokenPayload>(idToken);
-        console.log("decoded token:", decodedToken);
-        onLoginSuccess(decodedToken, credentialResponse);
-      } catch (error) {
-        console.error("error decoding JWT token:", error);
-        alert("Failed to process login info");
+    if (!idToken) {
+        console.error("login successful but no id token found");
+        alert ("login succeeded but failed to get user details");
         onLoginError();
-      }
-    } else {
-      console.error("login successful but no id token found");
-      alert ("login succeeded but failed to get user details");
+        return;
+    }
+
+    console.log("ID token JWT: ", idToken);
+    try {
+      const decodedToken = jwtDecode<GoogleIdTokenPayload>(idToken);
+      console.log("decoded token:", decodedToken);
+      onLoginSuccess(decodedToken, credentialResponse);
+    } catch (error) {
+      console.error("error decoding JWT token:", error);
+      alert("Failed to process login info");
       onLoginError();
     }
   };
