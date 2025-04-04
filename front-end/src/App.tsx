@@ -15,6 +15,7 @@ if (!googleClientId) {
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCreatePostFormVisible, setIsCreatePostFormVisible] = useState(false);
 
   const fetchPosts = () => {
     setLoading(true)
@@ -54,6 +55,9 @@ function App() {
       fetchPosts()
   };
 
+  const toggleCreatePostForm = () => {
+    setIsCreatePostFormVisible(currentVisibility => !currentVisibility);
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -62,8 +66,10 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
-        <Navbar />
-        <CreatePostForm onPostSubmit={handleCreatePostSubmit}/>
+        <Navbar onToggleCreatePostForm={toggleCreatePostForm}/>
+        {isCreatePostFormVisible && (
+          <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
+        )}
         <div className="Posts">
           {loading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
         </div>
