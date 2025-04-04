@@ -21,19 +21,20 @@
   .navbar-links {
     list-style: none;
     display: flex;
-    gap: 1rem;
-    padding-right: 5cqmax;
+    align-items: center; /* Key property for vertical alignment */
+    gap: 1.2rem; /* Adjust spacing between items */
+    margin: 0;
+    padding: 0;
+    /* padding-right: 5cqmax; */ /* Consider using standard units like rem or px */
+    padding-right: 2rem;
   }
   
-  .navbar-links a {
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s;
+  /* Style the greeting text */
+  .user-greeting {
+    font-weight: 500;
+    white-space: nowrap; /* Prevent wrapping */
   }
   
-  .navbar-links a:hover {
-    color: #ddd;
-  }
   
   /* Add some padding to the body to prevent content 
   * from being hidden under the navigation bar, 

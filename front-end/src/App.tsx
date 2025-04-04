@@ -3,7 +3,9 @@ import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
+import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import CreatePostForm from './components/CreatePostForm/CreatePostForm';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 if (!googleClientId) {
@@ -13,9 +15,10 @@ if (!googleClientId) {
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newPost, setNewPost] = useState({ username: "", description: "", imagePath: "", profilePicPath: "" });
+  const [isCreatePostFormVisible, setIsCreatePostFormVisible] = useState(false);
 
   const fetchPosts = () => {
+    setLoading(true)
     fetch("http://localhost:7005/api/data") // Fetches from API endpoint declared in server
     .then((response) => response.json())
     .then((data) => {
@@ -28,25 +31,32 @@ function App() {
     });
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleCreatePostSubmit = (postData: CreatePostData) => {
     fetch("http://localhost:7005/api/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newPost),
+      body: JSON.stringify(postData),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setPosts([...posts, data]); // Add the new post to state
-        fetchPosts();
-        setNewPost({ username: "", description: "", imagePath: "", profilePicPath: "" }); // Reset create post form
+      .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json();
+        } else {
+            return null;
+        }
       })
-      .catch((error) => console.error("Error adding post:", error));
+      .catch((error) => {
+          console.error("Error adding post:", error);
+      });
+
+      fetchPosts()
+  };
+
+  const toggleCreatePostForm = () => {
+    setIsCreatePostFormVisible(currentVisibility => !currentVisibility);
   };
 
   useEffect(() => {
@@ -56,17 +66,10 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
-        <Navbar />
-        <div className="post-form">
-        <h2>Create a Post</h2>
-          <form onSubmit={handleSubmit}>
-            <input type="text" name="username" placeholder="Username" value={newPost.username} onChange={handleInputChange} required />
-            <input type="text" name="profilePicPath" placeholder="Profile Pic URL" value={newPost.profilePicPath} onChange={handleInputChange} />
-            <input type="text" name="imagePath" placeholder="Post Image URL" value={newPost.imagePath} onChange={handleInputChange} />
-            <textarea name="description" placeholder="Write something..." value={newPost.description} onChange={handleInputChange} required />
-            <button type="submit">Post</button>
-          </form>
-        </div>
+        <Navbar onToggleCreatePostForm={toggleCreatePostForm}/>
+        {isCreatePostFormVisible && (
+          <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
+        )}
         <div className="Posts">
           {loading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
         </div>

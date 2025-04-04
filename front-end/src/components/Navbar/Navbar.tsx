@@ -14,8 +14,11 @@ interface GoogleIdTokenPayload extends JwtPayload {
     family_name?: string;
 }
 
+interface NavbarProps {
+  onToggleCreatePostForm: () => void
+}
 
-export default function Navbar() {
+export default function Navbar( {onToggleCreatePostForm}: NavbarProps ) {
   const [userInfo, setUserInfo] = useState<GoogleIdTokenPayload | null>(null);
 
   const handleLoginSuccess = (decodedToken: GoogleIdTokenPayload, credentialResponse: CredentialResponse) => {
@@ -36,24 +39,46 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar">
+  <nav className="navbar">
       <div className="navbar-logo">
         RetroInsta
       </div>
       <ul className="navbar-links">
-        <li>
-          {userInfo ? (
-            <div>
-              <span>{userInfo.given_name}</span>
-              <button onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</button>
-            </div>
-          ) : (
+        {userInfo ? (
+          // ---- Logged In State ----
+          <> {/* Use React Fragment */}
+            {/* Make username a list item */}
+            <li className="navbar-item">
+              {/* Add specific class for potential styling */}
+              <span className="user-greeting">{userInfo.given_name}</span>
+            </li>
+            <li className="navbar-item"> {/* Item for Make Post button */}
+              <button
+                onClick={onToggleCreatePostForm}
+                className="navbar-button make-post-button"
+              >
+                Make a Post
+              </button>
+            </li>
+            {/* Remove the extra div around the logout button */}
+            <li className="navbar-item"> {/* Item for Logout button */}
+              <button
+                onClick={handleLogout}
+                className="navbar-button logout-button"
+              >
+                Logout
+              </button>
+            </li>
+          </>
+        ) : (
+          // ---- Logged Out State ----
+          <li className="navbar-item">
             <GoogleLoginButton
               onLoginSuccess={handleLoginSuccess}
               onLoginError={handleLoginError}
             />
-          )}
-        </li>
+          </li>
+        )}
       </ul>
     </nav>
   );
