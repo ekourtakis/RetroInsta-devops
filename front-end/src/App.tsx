@@ -35,21 +35,23 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-      // Send the post data to the backend to save the post
-      const postResponse = await fetch("http://localhost:7005/api/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
-      });
-  
-      const postDataResponse = await postResponse.json();
-      setPosts([...posts, postDataResponse]); // Add the new post to state
-      fetchPosts();
-      setNewPost({ username: "", description: "", imagePath: null, profilePicPath: "" }); // Reset create post form
-    } catch (error) {
-      console.error("Error adding post:", error);
-    }
+
+
+
+      try {
+        const response = await fetch("http://localhost:7005/api/data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newPost),
+        });
+
+        const data = await response.json();
+        setPosts([...posts, data]);
+        fetchPosts();
+        setNewPost({ username: "", description: "", imagePath: null, profilePicPath: "" });
+      } catch (error) {
+        console.error("Error adding post:", error);
+      }
   };
 
   useEffect(() => {
@@ -69,6 +71,7 @@ function App() {
           <textarea name="description" placeholder="Write something..." value={newPost.description} onChange={handleInputChange} required />
           <button type="submit">Post</button>
         </form>
+        </div>
       </div>
     </GoogleOAuthProvider>
   );

@@ -69,6 +69,7 @@ async function main() {
         });
     
         const presignedUrl = presignedUrlResponse.data.presignedUrl;
+        const viewUrl = presignedUrlResponse.data.publicUrl;
     
         // Upload the file to MinIO using the presigned URL
         await axios.put(presignedUrl, fileBuffer, {
@@ -79,7 +80,7 @@ async function main() {
     
         res.status(200).json({
           message: "File uploaded successfully!",
-          presignedUrl, // You can return the presigned URL to show where it was uploaded
+          viewUrl,
         });
       } catch (error) {
         console.error("Error uploading file with presigned URL:", error);
