@@ -1,3 +1,4 @@
+import './CreatePostForm.css'
 import react, {useState, ChangeEvent, FormEvent } from 'react'
 
 export interface CreatePostData {
@@ -60,21 +61,21 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
         <input
             type="text"
             name="profilePicPath"
-            placeholder="Profile Pic URL (Optional)"
+            placeholder="Profile Pic URL/file path (Optional)"
             value={formData.profilePicPath || ''} // Handle potential undefined value
             onChange={handleInputChange}
         />
         <input
             type="text"
             name="imagePath"
-            placeholder="Post Image URL"
+            placeholder="Post Image URL/file path"
             value={formData.imagePath}
             onChange={handleInputChange}
             required
         />
         <textarea
             name="description"
-            placeholder="Write something..."
+            placeholder="Write a description of your photo..."
             value={formData.description}
             onChange={handleInputChange}
             required
