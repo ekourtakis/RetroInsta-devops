@@ -3,9 +3,10 @@ import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
+import CreatePostForm from './components/CreatePostForm/CreatePostForm'
 import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import CreatePostForm from './components/CreatePostForm/CreatePostForm';
+import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 if (!googleClientId) {
@@ -13,9 +14,9 @@ if (!googleClientId) {
 }
 
 function App() {
+  // post feed
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCreatePostFormVisible, setIsCreatePostFormVisible] = useState(false);
 
   const fetchPosts = () => {
     setLoading(true)
@@ -27,9 +28,16 @@ function App() {
     })
     .catch((error) => {
       console.error("Error fetching posts:", error);
-      setLoading(false);
     });
+      setLoading(false);
   }
+
+  // create a post
+  const [isCreatePostFormVisible, setIsCreatePostFormVisible] = useState(false);
+  
+  const toggleCreatePostForm = () => {
+    setIsCreatePostFormVisible(currentVisibility => !currentVisibility);
+  };
 
   const handleCreatePostSubmit = (postData: CreatePostData) => {
     fetch("http://localhost:7005/api/data", {
@@ -37,27 +45,43 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(postData),
     })
-      .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json();
-        } else {
-            return null;
-        }
-      })
-      .catch((error) => {
-          console.error("Error adding post:", error);
-      });
-
-      fetchPosts()
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        return response.json();
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      console.error("Error adding post:", error);
+    });
+    
+    fetchPosts()
   };
+  
+  // login
+  const [loggedInUser, setLoggedInUser] = useState<GoogleIdTokenPayload | null>(null)
+  
+  const handleLoginSuccess = (decodedToken: GoogleIdTokenPayload) => {
+    setLoggedInUser(decodedToken)
+    // TODO: look up google id in DB, add user or load existing data
+  }
 
-  const toggleCreatePostForm = () => {
-    setIsCreatePostFormVisible(currentVisibility => !currentVisibility);
-  };
+  const handleLoginError = () => {
+    console.error("login failed!")
+    setLoggedInUser(null)
+    // TODO: handle any cleanup, unloaded data, etc
+  }
+
+  const handleLogout = () => {
+    console.log("User logged out")
+    setLoggedInUser(null)
+    // TODO: same as login error, clear data, etc
+  }
 
   useEffect(() => {
     fetchPosts();
@@ -66,7 +90,13 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
-        <Navbar onToggleCreatePostForm={toggleCreatePostForm}/>
+        <Navbar 
+          loggedInUser={loggedInUser}
+          onLoginSuccess={handleLoginSuccess}
+          onLoginError={handleLoginError}
+          onLogout={handleLogout}
+          onToggleCreatePostForm={toggleCreatePostForm}
+        />
         {isCreatePostFormVisible && (
           <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
         )}
