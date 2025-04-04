@@ -1,8 +1,14 @@
 import './App.css';
 import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
-import { Post } from "./models/Post";
 import { useEffect, useState } from "react";
+import { Post } from "./models/Post"
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+if (!googleClientId) {
+  console.error("Error. VITE_GOOGLE_CLIENT_ID env variable not set.")
+}
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -48,22 +54,24 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Navbar />
-      <div className="post-form">
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <div className="App">
+        <Navbar />
+        <div className="post-form">
         <h2>Create a Post</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="username" placeholder="Username" value={newPost.username} onChange={handleInputChange} required />
-          <input type="text" name="profilePicPath" placeholder="Profile Pic URL" value={newPost.profilePicPath} onChange={handleInputChange} />
-          <input type="text" name="imagePath" placeholder="Post Image URL" value={newPost.imagePath} onChange={handleInputChange} />
-          <textarea name="description" placeholder="Write something..." value={newPost.description} onChange={handleInputChange} required />
-          <button type="submit">Post</button>
-        </form>
+          <form onSubmit={handleSubmit}>
+            <input type="text" name="username" placeholder="Username" value={newPost.username} onChange={handleInputChange} required />
+            <input type="text" name="profilePicPath" placeholder="Profile Pic URL" value={newPost.profilePicPath} onChange={handleInputChange} />
+            <input type="text" name="imagePath" placeholder="Post Image URL" value={newPost.imagePath} onChange={handleInputChange} />
+            <textarea name="description" placeholder="Write something..." value={newPost.description} onChange={handleInputChange} required />
+            <button type="submit">Post</button>
+          </form>
+        </div>
+        <div className="Posts">
+          {loading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
+        </div>
       </div>
-      <div className="Posts">
-        {loading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
-      </div>
-    </div>
+    </GoogleOAuthProvider>
   );
 }
 
