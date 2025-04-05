@@ -22,6 +22,11 @@ export default function Navbar({
   return (
   <nav className="navbar">
       <div className="navbar-logo">
+        <img 
+          src="/insta.png" 
+          alt="RetroInsta logo" 
+          style={{ height: '40px', marginRight: '8px', verticalAlign: 'middle' }} 
+        />
         RetroInsta
       </div>
       <ul className="navbar-links">
