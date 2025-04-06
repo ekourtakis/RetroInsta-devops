@@ -2,21 +2,24 @@ import './Navbar.css';
 import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton'; // Adjust path
 import { CredentialResponse } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from '../../models/GoogleIdTokenPayload';
+import { User } from '../../models/User';
 
 interface NavbarProps {
-  onToggleCreatePostForm: () => void;
-  loggedInUser: GoogleIdTokenPayload | null;
+  user: User | null;
+  authLoading: boolean;
   onLoginSuccess: (decodedToken: GoogleIdTokenPayload, credentialResponse: CredentialResponse) => void;
   onLoginError: () => void;
   onLogout: () => void;
+  onToggleCreatePostForm: () => void;
 }
 
 export default function Navbar({
-  onToggleCreatePostForm,
-  loggedInUser,
+  user,
+  authLoading,
   onLoginSuccess,
   onLoginError,
-  onLogout
+  onLogout,
+  onToggleCreatePostForm,
 }: NavbarProps 
 ) {
   return (
@@ -30,11 +33,11 @@ export default function Navbar({
         RetroInsta
       </div>
       <ul className="navbar-links">
-        { loggedInUser ? (
+        { user ? (
           // ---- Logged In State ----
           <> {/* Use React Fragment */}
             <li className="navbar-item">
-              <span className="user-greeting">{loggedInUser?.given_name}</span>
+              <span className="user-greeting">{user?.username}</span>
             </li>
             <li className="navbar-item">
               <button

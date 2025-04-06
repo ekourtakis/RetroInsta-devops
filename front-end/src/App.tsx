@@ -7,7 +7,9 @@ import CreatePostForm from './components/CreatePostForm/CreatePostForm'
 import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
+import { User } from './models/User';
 
+const backendUrl = "http://localhost:7005" // TODO: move to env variable
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 if (!googleClientId) {
   console.error("Error. VITE_GOOGLE_CLIENT_ID env variable not set.")
@@ -16,10 +18,10 @@ if (!googleClientId) {
 function App() {
   // post feed
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(true);
 
   const fetchPosts = () => {
-    setLoading(true)
+    setPostsLoading(true)
     fetch("http://localhost:7005/api/posts") // Fetches from API endpoint declared in server
     .then((response) => response.json())
     .then((data) => {
@@ -29,7 +31,7 @@ function App() {
       console.error("Error fetching posts:", error);
     });
 
-    setLoading(false);
+    setPostsLoading(false);
   }
 
   // create a post
@@ -59,25 +61,61 @@ function App() {
       console.error("Error adding post:", error);
     });
   };
-
-        
-  // login
-  const [loggedInUser, setLoggedInUser] = useState<GoogleIdTokenPayload | null>(null)
+      
+  // login state
+  const [appUser, setAppUser] = useState<User | null>(null)
+  const [authLoading, setAuthLoading] = useState(false)
   
-  const handleLoginSuccess = (decodedToken: GoogleIdTokenPayload) => {
-    setLoggedInUser(decodedToken)
-    // TODO: look up google id in DB, add user or load existing data
+  const handleLoginSuccess = async (decodedToken: GoogleIdTokenPayload) => {
+    setAuthLoading(true)
+
+    const googleId = decodedToken.sub
+    const email = decodedToken.email
+    const profilePicPath = decodedToken.picture
+
+    if (!googleId || !email) {
+      console.error("Error: Missing googleId or email in decoded token")
+      return
+    }
+
+    try {
+      const response = await fetch(`${backendUrl}/api/auth/google/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          googleId: googleId, 
+          email: email, 
+          profilePicPath: profilePicPath
+        }),
+      });
+
+      const fetchedUser: User = await response.json();
+
+      if (!response.ok) {
+        console.error("Error logging in user:", fetchedUser)
+        handleLoginError()
+        return
+      }
+
+      console.log("User fetched:", fetchedUser)
+      setAppUser(fetchedUser)
+    } catch (error) {
+      console.error("Error logging in user:", error)
+      handleLoginError()
+    } finally {
+      setAuthLoading(false)
+    }
   }
 
   const handleLoginError = () => {
     console.error("login failed!")
-    setLoggedInUser(null)
+    setAppUser(null)
     // TODO: handle any cleanup, unloaded data, etc
   }
 
   const handleLogout = () => {
     console.log("User logged out")
-    setLoggedInUser(null)
+    setAppUser(null)
     // TODO: same as login error, clear data, etc
   }
 
@@ -89,7 +127,8 @@ function App() {
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
         <Navbar 
-          loggedInUser={loggedInUser}
+          user={appUser}
+          authLoading={authLoading}
           onLoginSuccess={handleLoginSuccess}
           onLoginError={handleLoginError}
           onLogout={handleLogout}
@@ -99,7 +138,7 @@ function App() {
           <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
         )}
         <div className="Posts">
-          {loading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
+          {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
         </div>
       </div>
     </GoogleOAuthProvider>
