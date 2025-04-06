@@ -107,6 +107,7 @@ function App() {
   const handleLogout = () => {
     console.log("User logged out")
     setAppUser(null)
+    localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY) // clear user ID from local storage
     // TODO: same as login error, clear data, etc
   }
 
