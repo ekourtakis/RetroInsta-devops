@@ -32,7 +32,7 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default browser form submission
     // Basic validation (optional, add more robust validation as needed)
-    if (!formData.username || !formData.description || !formData.imagePath) {
+    if (!formData.description || !formData.imagePath) {
         alert("Please fill in username, image URL, and description.");
         return;
     }
