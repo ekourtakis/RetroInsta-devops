@@ -24,12 +24,12 @@ function App() {
     .then((response) => response.json())
     .then((data) => {
       setPosts(data);
-      setLoading(false);
     })
     .catch((error) => {
       console.error("Error fetching posts:", error);
     });
-      setLoading(false);
+
+    setLoading(false);
   }
 
   // create a post
@@ -49,20 +49,18 @@ function App() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        return response.json();
-      } else {
-        return null;
-      }
+      return response.json();
+    })
+    .then(() => {
+      fetchPosts(); // Refresh posts after the new post is successfully created
+      toggleCreatePostForm(); // Hide the form
     })
     .catch((error) => {
       console.error("Error adding post:", error);
     });
-    
-    fetchPosts()
   };
-  
+
+        
   // login
   const [loggedInUser, setLoggedInUser] = useState<GoogleIdTokenPayload | null>(null)
   
