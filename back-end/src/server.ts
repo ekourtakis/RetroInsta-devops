@@ -1,21 +1,24 @@
-import mongoose, { Document, Schema, Model, MongooseError, mongo } from 'mongoose'
+import mongoose, { Document, Schema, Model, MongooseError, Types } from 'mongoose'
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
-const DATABASE_DB = process.env.MONGO_INITDB_DATABASE;
-const DATABASE_HOST = process.env.DATABASE_HOST;
-const DATABASE_PORT = process.env.DATABASE_PORT;
-const DATABASE_COLLECTION = process.env.DATABASE_COLLECTION;
+const MONGO_DB = process.env.MONGO_DB;
+const MONGO_HOST = process.env.MONGO_HOST;
+const MONGO_PORT = process.env.MONGO_PORT;
+const USERS_COLLECTION = process.env.USERS_COLLECTION;
+const POSTS_COLLECTION = process.env.POSTS_COLLECTION;
 
 const SERVER_HOST = process.env.SERVER_HOST;
 const SERVER_PORT = process.env.SERVER_PORT;
 
-if (!DATABASE_DB || !DATABASE_HOST || !DATABASE_PORT || !DATABASE_COLLECTION) {
+if (!MONGO_DB || !MONGO_HOST || !MONGO_PORT || !POSTS_COLLECTION 
+  || !USERS_COLLECTION || !SERVER_PORT
+) {
   console.error("Error: Missing required database environment variables!");
   process.exit(1);
 }
 
-const URI = `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}`;
+const URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 
 interface IPost {
   username: string
@@ -30,10 +33,36 @@ const postSchema: Schema<IPost> = new Schema({
   profilePicPath: String,
   imagePath: String,
   description: String,
-  createdAt: { type: Date, default: Date.now }
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields
 })
 
-const Post: Model<IPost> = mongoose.model<IPost>('Post', postSchema, DATABASE_COLLECTION)
+const Post: Model<IPost> = mongoose.model<IPost>('Post', postSchema, POSTS_COLLECTION)
+
+interface IUser {
+  googleId: string;
+  email: string;
+  username: string;
+  profilePicPath: string;
+  bio?: string;
+  postIDs: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const userSchema: Schema<IUser> = new Schema({
+  googleId: { type: String, required: true, unique: true, index: true },
+  email: { type: String, required: true, unique: true, index: true },
+  username: { type: String, required: true, unique: true, index: true }, // Ensure unique usernames
+  profilePicPath: { type: String, required: true }, // Assuming path is required
+  bio: { type: String, required: false },
+  // Array of ObjectIds referencing the 'Post' model. Mongoose handles the link.
+  postIDs: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields
+})
+
+const User: Model<IUser> = mongoose.model<IUser>('User', userSchema, USERS_COLLECTION)
 
 const app = express();
 app.use(cors()); // Enable CORS to allow requests from frontend
@@ -46,7 +75,7 @@ async function startServer() {
     
     await initializeData()
 
-    app.get("/api/data", async (request, response) =>{
+    app.get("/api/posts", async (request, response) =>{
       try {
         const data: IPost[] = await Post.find({})
         response.json(data)
@@ -56,7 +85,7 @@ async function startServer() {
       }
     });
 
-    app.post("/api/data", async(request, response) => {
+    app.post("/api/posts", async(request, response) => {
       try {
         const newPostData: Partial<IPost> = request.body
 
@@ -98,7 +127,7 @@ async function initializeData() {
 
           console.log('Dummy data added.');
       } else {
-           console.log(`Collection '${DATABASE_COLLECTION}' already has ${count} documents.`);
+           console.log(`Collection '${POSTS_COLLECTION}' already has ${count} documents.`);
       }
   } catch (error) {
       console.error("Error initializing data:", error);

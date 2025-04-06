@@ -20,7 +20,7 @@ function App() {
 
   const fetchPosts = () => {
     setLoading(true)
-    fetch("http://localhost:7005/api/data") // Fetches from API endpoint declared in server
+    fetch("http://localhost:7005/api/posts") // Fetches from API endpoint declared in server
     .then((response) => response.json())
     .then((data) => {
       setPosts(data);
@@ -40,7 +40,7 @@ function App() {
   };
 
   const handleCreatePostSubmit = (postData: CreatePostData) => {
-    fetch("http://localhost:7005/api/data", {
+    fetch("http://localhost:7005/api/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(postData),
