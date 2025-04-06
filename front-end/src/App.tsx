@@ -1,6 +1,7 @@
 import './App.css';
 import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
+import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
 import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
