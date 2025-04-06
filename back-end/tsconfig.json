@@ -1,0 +1,28 @@
+// tsconfig.json
+{
+    "compilerOptions": {
+      /* Base Options */
+      "target": "ES2020",                     // Target modern Node.js versions (Node 18 supports newer features)
+      "module": "NodeNext",                  // Use Node's native ES Module support
+      "moduleResolution": "NodeNext",        // How modules are looked up, aligns with 'module'
+      "lib": ["ES2020"],                     // Standard libraries available (align with target)
+      "esModuleInterop": true,               // Enables compatibility with CommonJS modules
+      "forceConsistentCasingInFileNames": true, // Avoids case-sensitivity issues
+      "strict": true,                        // Enable all strict type-checking options (recommended)
+      "skipLibCheck": true,                  // Skip type checking of declaration files (speeds up compilation)
+  
+      /* Output Options */
+      "outDir": "./dist",                    // Where to output compiled JavaScript files
+      "rootDir": "./src",                    // Where your source TypeScript files are located
+      "sourceMap": true,                     // Generate source maps for debugging
+  
+      /* Module Resolution Options */
+      "resolveJsonModule": true,             // Allow importing .json files
+  
+      /* Advanced Options */
+      // "baseUrl": "./",                    // Optional: Base directory for non-relative module imports
+      // "paths": {},                        // Optional: Path mapping for module imports
+    },
+    "include": ["src/**/*"],                // Which files TypeScript should compile
+    "exclude": ["node_modules", "dist"]     // Which files/directories to ignore
+  }

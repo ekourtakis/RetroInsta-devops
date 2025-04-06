@@ -1,6 +1,5 @@
-// sets up MongoDB server
-import mongoose, { mongo } from 'mongoose'
-import express from 'express';
+import mongoose, { Document, Schema, Model, MongooseError, mongo } from 'mongoose'
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
 const DATABASE_DB = process.env.MONGO_INITDB_DATABASE;
@@ -11,9 +10,22 @@ const DATABASE_COLLECTION = process.env.DATABASE_COLLECTION;
 const SERVER_HOST = process.env.SERVER_HOST;
 const SERVER_PORT = process.env.SERVER_PORT;
 
+if (!DATABASE_DB || !DATABASE_HOST || !DATABASE_PORT || !DATABASE_COLLECTION) {
+  console.error("Error: Missing required database environment variables!");
+  process.exit(1);
+}
+
 const URI = `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}`;
 
-const postSchema = new mongoose.Schema({
+interface IPost {
+  username: string
+  profilePicPath?: string
+  imagePath?: string
+  description?: string
+  createdAt?: Date
+}
+
+const postSchema: Schema<IPost> = new Schema({
   username: { type: String, required: true },
   profilePicPath: String,
   imagePath: String,
@@ -21,7 +33,7 @@ const postSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 })
 
-const Post = mongoose.model('Post', postSchema, DATABASE_COLLECTION)
+const Post: Model<IPost> = mongoose.model<IPost>('Post', postSchema, DATABASE_COLLECTION)
 
 const app = express();
 app.use(cors()); // Enable CORS to allow requests from frontend
@@ -36,9 +48,9 @@ async function startServer() {
 
     app.get("/api/data", async (request, response) =>{
       try {
-        const data = await Post.find({})
+        const data: IPost[] = await Post.find({})
         response.json(data)
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching data:", error)
         response.status(500).json({ error: "Internal server error" })
       }
@@ -46,13 +58,14 @@ async function startServer() {
 
     app.post("/api/data", async(request, response) => {
       try {
-        const newPostData = request.body
+        const newPostData: Partial<IPost> = request.body
 
         const createdPost = await Post.create(newPostData)
         response.status(201).json(createdPost)
-      } catch  (error) {
-        if (error.name == "ValidationError") {
-          return res.status(400).json({ error: error.message} )
+      } catch  (error: any) {
+        if (error instanceof mongoose.Error.ValidationError) {
+          response.status(400).json({ error: error.message} )
+          return
         }
         
         console.error("error adding post:", error)
@@ -62,7 +75,7 @@ async function startServer() {
 
     app.listen(SERVER_PORT, () => {
       console.log("server runnong on http://${SERVER_HOST):${SERVER_PORT}")
-    })
+    });
   } catch (error) {
     console.error("Failed to connect to mongo or start server:", error)
     process.exit(1)
@@ -74,11 +87,15 @@ async function initializeData() {
       const count = await Post.countDocuments();
       if (count === 0) {
           console.log('Collection is empty, adding dummy data...');
-          await Post.insertMany([
-              { username: "abby123", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/mountain.jpeg", description: "Check out this beautiful photo!" },
-              { username: "benny_2000", profilePicPath: "/testimage/man.jpeg", imagePath: "/testimage/bridge.jpeg", description: "This is a description! Cool beans." },
-              { username: "char1ieIsC00L", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/man.jpeg", description: "hi benny :)" }
-          ]);
+
+          const initialPosts: IPost[] = [
+            { username: "abby123", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/mountain.jpeg", description: "Check out this beautiful photo!" },
+            { username: "benny_2000", profilePicPath: "/testimage/man.jpeg", imagePath: "/testimage/bridge.jpeg", description: "This is a description! Cool beans." },
+            { username: "char1ieIsC00L", profilePicPath: "/testimage/avatar.jpeg", imagePath: "/testimage/man.jpeg", description: "hi benny :)" }
+          ];
+
+          await Post.insertMany(initialPosts);
+
           console.log('Dummy data added.');
       } else {
            console.log(`Collection '${DATABASE_COLLECTION}' already has ${count} documents.`);
@@ -90,10 +107,17 @@ async function initializeData() {
 
 startServer()
 
-mongoose.connection.on("error", error => {
+mongoose.connection.on("error", (error: Error) => {
   console.error("Mongoose connection error:", error)
 })
 
 mongoose.connection.on("disconnected", () => {
   console.log("Mongoose disconnected")
 })
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT signal received: closing MongoDB connection');
+  await mongoose.connection.close();
+  console.log('MongoDB connection closed. Exiting.');
+  process.exit(0);
+});
