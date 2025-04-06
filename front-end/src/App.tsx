@@ -78,8 +78,9 @@ function App() {
       return
     }
 
+    const googleApiEndPoint = `${backendUrl}/api/auth/google/login`
     try {
-      const response = await fetch(`${backendUrl}/api/auth/google/login`, {
+      const response = await fetch(googleApiEndPoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
