@@ -12,7 +12,7 @@ interface CreatePostFormProps {
     onPostSubmit: (postData: CreatePostData) => void
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostSubmit }) => {
+export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     // just for holding data within this component
     const [formData, setFormData] = useState<CreatePostData>({
         username: '',
@@ -78,5 +78,3 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostSubmit }) => {
     </div>
     );
 }
-
-export default CreatePostForm

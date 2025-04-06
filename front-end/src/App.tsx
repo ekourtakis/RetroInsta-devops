@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
-import CreatePostForm from './components/CreatePostForm/CreatePostForm'
 import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
@@ -21,7 +20,6 @@ if (!googleClientId) {
 }
 
 function App() {
-  // post feed
   const [posts, setPosts] = useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
 

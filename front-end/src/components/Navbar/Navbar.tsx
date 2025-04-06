@@ -36,10 +36,11 @@ export default function Navbar({
         { user ? (
           // ---- Logged In State ----
           <> {/* Use React Fragment */}
+            {/* Make username a list item */}
             <li className="navbar-item">
               <span className="user-greeting">{user?.username}</span>
             </li>
-            <li className="navbar-item">
+            <li className="navbar-item"> {/* Item for Make Post button */}
               <button
                 onClick={onToggleCreatePostForm}
                 className="navbar-button make-post-button"
@@ -47,7 +48,8 @@ export default function Navbar({
                 Make a Post
               </button>
             </li>
-            <li className="navbar-item">
+            {/* Remove the extra div around the logout button */}
+            <li className="navbar-item"> {/* Item for Logout button */}
               <button
                 onClick={onLogout}
                 className="navbar-button logout-button"

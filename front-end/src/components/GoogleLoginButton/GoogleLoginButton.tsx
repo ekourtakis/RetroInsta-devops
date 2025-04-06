@@ -1,13 +1,21 @@
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-import { GoogleIdTokenPayload } from '../../models/GoogleIdTokenPayload';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+interface GoogleIdTokenPayload extends JwtPayload {
+  email?: string;
+  email_verified?: boolean;
+  name?: string;
+  picture?: string;
+  given_name?: string;
+  family_name?: string;
+}
 
 interface GoogleLoginButtonProps {
   onLoginSuccess: (decodedToken: GoogleIdTokenPayload, credentialResponse: CredentialResponse) => void;
   onLoginError: () => void;
 }
 
-const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onLoginSuccess, onLoginError }) => {
+export default function GoogleLoginButton({ onLoginSuccess, onLoginError }: GoogleLoginButtonProps) {
 
   const handleSuccess = (credentialResponse: CredentialResponse) => {
     console.log("Google login success. Credential response: ", credentialResponse);
@@ -45,5 +53,3 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ onLoginSuccess, o
     />
   );
 }
-
-export default GoogleLoginButton
