@@ -181,12 +181,16 @@ const getUserDataById = async (userId: string, apiUrl: string): Promise<User> =>
       return;
     }
     
+    setAuthLoading(true);
     try {
       const user = await getUserDataById(userId, backendUrl);
       setAppUser(user);
     } catch (error) {
       console.error("Error restoring user session:", error);
+      localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY); // Clear bad/invalid ID
+      setAppUser(null);
     }
+    setAuthLoading(false);
   }
 
   useEffect(() => {
