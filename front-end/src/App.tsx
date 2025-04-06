@@ -10,6 +10,8 @@ import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
 import { User } from './models/User';
 
 const backendUrl = "http://localhost:7005" // TODO: move to env variable
+const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
+
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 if (!googleClientId) {
   console.error("Error. VITE_GOOGLE_CLIENT_ID env variable not set.")
@@ -99,6 +101,8 @@ function App() {
       }
 
       console.log("User fetched:", fetchedUser)
+
+      localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, fetchedUser._id); // Store user ID in local storage for persistence
       setAppUser(fetchedUser)
     } catch (error) {
       console.error("Error logging in user:", error)
@@ -120,8 +124,74 @@ function App() {
     // TODO: same as login error, clear data, etc
   }
 
+  // get user from mongo _id
+// src/api/users.ts (Example: Create a new file for API calls)
+// Or you can place this helper function inside App.tsx but outside the component function
+
+const getUserDataById = async (userId: string, apiUrl: string): Promise<User> => {
+  if (!apiUrl) {
+      throw new Error("Backend API URL is not configured.");
+  }
+  if (!userId) {
+      throw new Error("User ID is required to fetch user data.");
+  }
+
+  const targetUrl = `${apiUrl}/api/users/${userId}`;
+  console.log(`[API] Fetching user data from: ${targetUrl}`);
+
+  try {
+      const response = await fetch(targetUrl);
+      console.log(`[API] Fetch user by ID response status: ${response.status}`);
+
+      // Try to parse JSON regardless of status for potential error messages
+      const responseData = await response.json();
+
+      if (!response.ok) {
+          const errorMessage = responseData?.error || `Backend fetch user failed with status ${response.status}`;
+          console.error(`[API] Error fetching user data: ${errorMessage}`, responseData);
+          throw new Error(errorMessage);
+      }
+
+      // Basic validation of the received data structure
+      if (!responseData?._id || !responseData?.email || !responseData?.username) {
+          console.error("[API] Received invalid user data structure:", responseData);
+          throw new Error("Received invalid user data structure from backend.");
+      }
+
+      console.log("[API] User data fetched successfully:", responseData);
+      return responseData as User; // Assume responseData matches User interface after validation
+
+  } catch (error) {
+      console.error(`[API] Network or parsing error fetching user ${userId}:`, error);
+      // Re-throw the error so the caller can handle it
+      // If it was already an Error object, re-throw it, otherwise wrap it
+      if (error instanceof Error) {
+          throw error;
+      } else {
+          throw new Error("An unknown error occurred while fetching user data.");
+      }
+  }
+};
+
+  // get user from local storage so we can persist login state on refresh
+  const restoreUserSession = async () => {
+    const userId = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY);
+    if (!userId) {
+      console.log("No user ID found in local storage.");
+      return;
+    }
+    
+    try {
+      const user = await getUserDataById(userId, backendUrl);
+      setAppUser(user);
+    } catch (error) {
+      console.error("Error restoring user session:", error);
+    }
+  }
+
   useEffect(() => {
     fetchPosts();
+    restoreUserSession();
   }, []);
 
   return (
