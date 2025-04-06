@@ -50,14 +50,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onPostSubmit }) => {
     <div className="create-post-form-container">
         <h2>Create a Post</h2>
         <form onSubmit={handleSubmit}>
-        <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleInputChange}
-            required
-        />
+
         <input
             type="text"
             name="profilePicPath"
