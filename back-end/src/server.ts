@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema, Model, MongooseError, Types } from 'mongoose'
 import express, { Request, Response, NextFunction, response } from 'express';
 import cors from 'cors';
-import { request } from 'http';
 
 const MONGO_DB = process.env.MONGO_DB;
 const MONGO_HOST = process.env.MONGO_HOST;
