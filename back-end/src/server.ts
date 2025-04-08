@@ -1,5 +1,8 @@
 import mongoose, { Document, Schema, Model, MongooseError, Types } from 'mongoose'
 import express, { Request, Response, NextFunction, response } from 'express';
+import { Client as MinioClient } from "minio";
+import axios from "axios";
+import multer, { Multer } from "multer";
 import cors from 'cors';
 
 const MONGO_DB = process.env.MONGO_DB;
@@ -22,6 +25,28 @@ if (
 const URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 const USERS_ENDPOINT = `/api/${USERS_COLLECTION}`;
 const POSTS_ENDPOINT = `/api/${POSTS_COLLECTION}`;
+
+// Minio Environment variables
+const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT!;
+const MINIO_PORT = parseInt(process.env.MINIO_PORT!);
+const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY!;
+const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY!;
+const MINIO_BUCKET = process.env.MINIO_BUCKET!;
+
+if (!MINIO_ENDPOINT || !MINIO_ACCESS_KEY || !MINIO_SECRET_KEY || !MINIO_BUCKET) {
+  throw new Error("Missing required Minio environment variables");
+}
+
+// MinIO client
+const minioClient = new MinioClient({
+  endPoint: MINIO_ENDPOINT,
+  port: MINIO_PORT,
+  useSSL: false,
+  accessKey: MINIO_ACCESS_KEY,
+  secretKey: MINIO_SECRET_KEY,
+});
+
+const upload: Multer = multer({ storage: multer.memoryStorage() });
 
 interface IPost {
   username: string
@@ -260,6 +285,75 @@ async function startServer() {
         }
         console.error("Error updating user:", error);
         response.status(500).json({ error: "Failed to update user" });
+      }
+    });
+
+    app.put("/upload-with-presigned-url", upload.single('file'), async (req: Request, res: Response) => {
+      try {
+        const { filename, fileType } = req.body;
+        const fileBuffer = req.file?.buffer;
+    
+        if (!filename || !fileType || !fileBuffer) {
+          return res.status(400).json({ error: "Missing filename, fileType, or fileBuffer" });
+        }
+    
+        // Generate the presigned URL using the provided details (if needed)
+        const presignedUrlResponse = await axios.post("http://localhost:7005/api/generate-presigned-url", {
+          filename,
+          fileType,
+        });
+    
+        const presignedUrl = presignedUrlResponse.data.presignedUrl;
+        const viewUrl = presignedUrlResponse.data.publicUrl;
+    
+        // Upload the file to MinIO using the presigned URL
+        await axios.put(presignedUrl, fileBuffer, {
+          headers: {
+            "Content-Type": fileType,
+          },
+        });
+    
+        res.status(200).json({
+          message: "File uploaded successfully!",
+          viewUrl,
+        });
+      } catch (error) {
+        console.error("Error uploading file with presigned URL:", error);
+        res.status(500).json({ error: "Error uploading file with presigned URL" });
+      }
+    });
+
+    app.post("/api/generate-presigned-url", async (req: Request, res: Response) => {
+      try {
+        const { filename, fileType } = req.body;
+
+        // Log the received values for debugging
+        console.log(`Received filename: ${filename}`);
+        console.log(`Received fileType: ${fileType}`);
+    
+        if (!filename || !fileType) {
+          return res.status(400).json({ error: "Missing filename or fileType" });
+        }
+    
+        // Generate a pre-signed URL that expires in 24 hours
+        const presignedUrl = await minioClient.presignedPutObject(
+          MINIO_BUCKET,
+          filename,
+          24 * 60 * 60 // 24 hours
+        );
+
+        console.log(`Generated presigned URL: ${presignedUrl}`);
+
+        const publicHost = 'localhost:9000'; // or your custom domain
+        const publicUrl = `http://${publicHost}/${MINIO_BUCKET}/${filename}`;
+    
+        res.status(200).json({
+          presignedUrl,
+          publicUrl,
+        });
+      } catch (error) {
+        console.error("Error generating pre-signed URL:", error);
+        res.status(500).json({ error: "Failed to generate pre-signed URL" });
       }
     });
 
