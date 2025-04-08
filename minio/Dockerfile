@@ -1,4 +1,4 @@
-FROM quay.io/minio/minio:latest
+FROM minio/minio:latest
 
 ENV MINIO_ROOT_USER minioadmin
 ENV MINIO_ROOT_PASSWORD minioadmin
