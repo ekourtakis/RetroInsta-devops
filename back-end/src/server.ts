@@ -27,12 +27,14 @@ const USERS_ENDPOINT = `/api/${USERS_COLLECTION}`;
 const POSTS_ENDPOINT = `/api/${POSTS_COLLECTION}`;
 
 // Minio Environment variables
-const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT!;
+// ! at the end says they will  be declared will get a runtime error if they arent
+const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT!; 
 const MINIO_PORT = parseInt(process.env.MINIO_PORT!);
 const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY!;
 const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY!;
 const MINIO_BUCKET = process.env.MINIO_BUCKET!;
 
+// make sure env are setup
 if (!MINIO_ENDPOINT || !MINIO_ACCESS_KEY || !MINIO_SECRET_KEY || !MINIO_BUCKET) {
   throw new Error("Missing required Minio environment variables");
 }
