@@ -15,7 +15,6 @@ services:
       - VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     depends_on:
       - back-end
-      
     
   back-end:   # Node server 
     container_name: back-end
@@ -51,14 +50,8 @@ services:
       - "9001:9001" # MinIO Console
     volumes:
       - minio-data:/data
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    # Define command here for clarity
     command: server /data --console-address ":9001"
     healthcheck: # Essential for depends_on condition: service_healthy
-        # Test command might need adjustment based on tools available in your minio image
-        # mc is likely available if it's the standard image
         test: ["CMD", "mc", "ready", "local"] # 'local' is the default alias mc uses internally
         interval: 5s
         timeout: 3s
@@ -78,8 +71,7 @@ services:
       - ./minio/create-bucket.sh:/usr/local/bin/create-bucket.sh
     # Set the entrypoint to run the mounted script
     entrypoint: ["/usr/local/bin/create-bucket.sh"]
-    # No restart needed, it's a one-shot task
-    # restart: "no"
+    restart: "no"
 
 volumes:
   database-v:
