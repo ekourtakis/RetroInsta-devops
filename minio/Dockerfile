@@ -1,8 +1,5 @@
 FROM minio/minio:latest
 
-ENV MINIO_ROOT_USER minioadmin
-ENV MINIO_ROOT_PASSWORD minioadmin
-
 ENV MINIO_DEFAULT_BUCKETS=posts
 
 # API port
