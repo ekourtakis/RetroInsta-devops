@@ -1,56 +1,44 @@
 import './Navbar.css';
 import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton'; // Adjust path
 import { CredentialResponse } from '@react-oauth/google';
-import { JwtPayload } from 'jwt-decode'; // Assuming GoogleIdTokenPayload is also exported or redefined here if needed
-import React, { useState } from 'react'; // Import useState
-
-// Define the same payload interface or import it
-interface GoogleIdTokenPayload extends JwtPayload {
-    email?: string;
-    email_verified?: boolean;
-    name?: string;
-    picture?: string;
-    given_name?: string;
-    family_name?: string;
-}
+import { GoogleIdTokenPayload } from '../../models/GoogleIdTokenPayload';
+import { User } from '../../models/User';
 
 interface NavbarProps {
-  onToggleCreatePostForm: () => void
+  user: User | null;
+  authLoading: boolean;
+  onLoginSuccess: (decodedToken: GoogleIdTokenPayload, credentialResponse: CredentialResponse) => void;
+  onLoginError: () => void;
+  onLogout: () => void;
+  onToggleCreatePostForm: () => void;
 }
 
-export default function Navbar( {onToggleCreatePostForm}: NavbarProps ) {
-  const [userInfo, setUserInfo] = useState<GoogleIdTokenPayload | null>(null);
-
-  const handleLoginSuccess = (decodedToken: GoogleIdTokenPayload, credentialResponse: CredentialResponse) => {
-    setUserInfo(decodedToken);
-    alert(`Login Successful! Welcome ${decodedToken.name || 'User'}`);
-    console.log("Email:", decodedToken.email);
-    console.log("User ID (sub):", decodedToken.sub);
-  };
-
-  const handleLoginError = () => {
-    setUserInfo(null);
-    console.error("login error!")
-  };
-
-  const handleLogout = () => {
-     setUserInfo(null);
-     console.log("User logged out");
-  }
-
+export default function Navbar({
+  user,
+  authLoading,
+  onLoginSuccess,
+  onLoginError,
+  onLogout,
+  onToggleCreatePostForm,
+}: NavbarProps 
+) {
   return (
   <nav className="navbar">
       <div className="navbar-logo">
+        <img 
+          src="/insta.png" 
+          alt="RetroInsta logo" 
+          style={{ height: '40px', marginRight: '8px', verticalAlign: 'middle' }} 
+        />
         RetroInsta
       </div>
       <ul className="navbar-links">
-        {userInfo ? (
+        { user ? (
           // ---- Logged In State ----
           <> {/* Use React Fragment */}
             {/* Make username a list item */}
             <li className="navbar-item">
-              {/* Add specific class for potential styling */}
-              <span className="user-greeting">{userInfo.given_name}</span>
+              <span className="user-greeting">{user?.username}</span>
             </li>
             <li className="navbar-item"> {/* Item for Make Post button */}
               <button
@@ -63,7 +51,7 @@ export default function Navbar( {onToggleCreatePostForm}: NavbarProps ) {
             {/* Remove the extra div around the logout button */}
             <li className="navbar-item"> {/* Item for Logout button */}
               <button
-                onClick={handleLogout}
+                onClick={onLogout}
                 className="navbar-button logout-button"
               >
                 Logout
@@ -74,8 +62,8 @@ export default function Navbar( {onToggleCreatePostForm}: NavbarProps ) {
           // ---- Logged Out State ----
           <li className="navbar-item">
             <GoogleLoginButton
-              onLoginSuccess={handleLoginSuccess}
-              onLoginError={handleLoginError}
+              onLoginSuccess={onLoginSuccess}
+              onLoginError={onLoginError}
             />
           </li>
         )}

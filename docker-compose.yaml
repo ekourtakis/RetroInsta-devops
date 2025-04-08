@@ -32,7 +32,7 @@ services:
   mongo:    # Database service
     container_name: mongo
     ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
+      - ${MONGO_PORT}:${MONGO_PORT}
     build:
       context: ./mongo
     env_file: .env

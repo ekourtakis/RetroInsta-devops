@@ -16,6 +16,13 @@
   .navbar-logo {
     font-size: 1.5rem;
     font-weight: bold;
+    display: flex; /* Add flex display */
+    align-items: center; /* Add vertical alignment */
+  }
+  
+  .navbar-logo-icon { /* Add styles for the logo icon */
+    height: 24px; /* Keep original height */
+    margin-right: 8px; /* Keep original margin */
   }
   
   .navbar-links {
