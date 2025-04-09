@@ -1,3 +1,5 @@
+import type { IPost, IUser } from 'shared-types';
+
 import mongoose, { Document, Schema, Model, MongooseError, Types } from 'mongoose'
 import express, { Request, Response, NextFunction, response } from 'express';
 import { Client as MinioClient } from "minio";
@@ -50,14 +52,6 @@ const minioClient = new MinioClient({
 
 const upload: Multer = multer({ storage: multer.memoryStorage() });
 
-interface IPost {
-  username: string
-  profilePicPath?: string
-  imagePath?: string
-  description?: string
-  createdAt?: Date
-}
-
 const postSchema: Schema<IPost> = new Schema({
   username: { type: String, required: true },
   profilePicPath: String,
@@ -68,17 +62,6 @@ const postSchema: Schema<IPost> = new Schema({
 })
 
 const Post: Model<IPost> = mongoose.model<IPost>('Post', postSchema, POSTS_COLLECTION)
-
-interface IUser {
-  googleId: string;
-  email: string;
-  username: string;
-  profilePicPath: string;
-  bio?: string;
-  postIDs: Types.ObjectId[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
 const userSchema: Schema<IUser> = new Schema({
   googleId: { type: String, required: true, unique: true, index: true },
