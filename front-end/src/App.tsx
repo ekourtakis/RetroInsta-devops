@@ -2,6 +2,7 @@ import './App.css';
 import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
 import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
+import SideBar from "./components/SideBar/SideBar";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
 import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
@@ -138,6 +139,9 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
+      <SideBar />
+        {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
+        <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
         <Navbar 
           user={appUser}
           authLoading={authLoading}
@@ -152,6 +156,7 @@ function App() {
         <div className="Posts">
           {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
         </div>
+      </div>
       </div>
     </GoogleOAuthProvider>
   );
