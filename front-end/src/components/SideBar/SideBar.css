@@ -2,9 +2,9 @@
     position: fixed;
     top: 60px;
     left: 0;
-    width: 250px; /* Adjust the width as needed */
+    width: 250px; 
     height: 100vh; /* Full height of the viewport */
-    background-color: #333; /* Light gray background */
+    background-color: #333; /* Dark gray background */
     border-right: 1px solid #ccc; /* Optional border for separation */
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
@@ -19,11 +19,12 @@
 
 .sidebar-menu {
     list-style: none;
-    padding: 0;
+    padding: 50;
     margin: 0;
 }
 
 .sidebar-item {
+    margin-top: 2rem;
     margin-bottom: 2rem;
 }
 
@@ -42,5 +43,5 @@
 }
 
 .sidebar-link:hover {
-    color: #ccc; /* Darker blue on hover */
+    color: #ccc; /* Darker grey on hover */
 }
