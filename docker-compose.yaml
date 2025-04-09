@@ -13,7 +13,8 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ensures file change detection works in Docker
       - VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      
+    depends_on:
+      - back-end
     
   back-end:   # Node server 
     container_name: back-end
@@ -27,6 +28,7 @@ services:
       - /nodejs/node_modules
     depends_on:
       - mongo
+      - minio
 
   mongo:    # Database service
     container_name: mongo
@@ -48,6 +50,28 @@ services:
       - "9001:9001" # MinIO Console
     volumes:
       - minio-data:/data
+    command: server /data --console-address ":9001"
+    healthcheck: # Essential for depends_on condition: service_healthy
+        test: ["CMD", "mc", "ready", "local"] # 'local' is the default alias mc uses internally
+        interval: 5s
+        timeout: 3s
+        retries: 5
+        start_period: 5s # Give minio time to initialize
+  
+  # This service runs once after minio is healthy to ensure the bucket exists
+  create-bucket:
+    container_name: create-bucket
+    # Use the official mc image from the same registry source
+    image: quay.io/minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy # Waits for minio healthcheck to pass
+    volumes:
+      # Mount the script into the container
+      - ./minio/create-bucket.sh:/usr/local/bin/create-bucket.sh
+    # Set the entrypoint to run the mounted script
+    entrypoint: ["/usr/local/bin/create-bucket.sh"]
+    restart: "no"
 
 volumes:
   database-v:
