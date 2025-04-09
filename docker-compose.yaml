@@ -2,14 +2,15 @@ services:
   front-end:
     container_name: front-end
     build:
-      context: ./front-end  # Path to the front-end directory
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./front-end/Dockerfile
     env_file: .env
     ports:
       - "5173:5173"  # Vite dev server port for HMR
     volumes:
-      - ./front-end:/app  # Mounts the front-end directory for live updates
-      - /app/node_modules  # Avoids overwriting node_modules inside the container
+      - ./front-end:/app/front-end
+      - ./shared-types:/app/packages/shared-types
+      - /app/front-end/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true  # Ensures file change detection works in Docker
       - VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
@@ -20,11 +21,9 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     build:
-      context: ./back-end
+      context: .
+      dockerfile: ./back-end/Dockerfile
     env_file: .env
-    volumes:
-      - ./back-end:/nodejs
-      - /nodejs/node_modules
     depends_on:
       - mongo
 

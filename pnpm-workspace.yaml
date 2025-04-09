@@ -1,0 +1,4 @@
+packages:
+  - shared-types
+  - front-end
+  - back-end

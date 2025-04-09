@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "ES2016", // Or a suitable target
+      "module": "CommonJS", // Or "ESNext" if your backend/frontend support it
+      "outDir": "./dist", // Output directory for compiled files
+      "rootDir": "./src", // Source directory
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      /* Declaration Files */
+      "declaration": true, /* Generate corresponding '.d.ts' file. */
+      "declarationMap": true, /* Generates sourcemaps for declarations */
+      "sourceMap": true /* Generates '.map' file. */
+    },
+    "include": ["src/**/*"], // Files to include in compilation
+    "exclude": ["node_modules", "dist"] // Files/dirs to exclude
+  }

@@ -1,0 +1,16 @@
+{
+    "name": "retroinsta",
+    "private": true,
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "clean": "turbo run clean && rm -rf node_modules"
+    },
+    "packageManager": "pnpm@10.0.0",
+    "dependencies": {
+        "typescript": "^5.8.3"
+    },
+    "devDependencies": {
+        "turbo": "^2.5.0"
+    }
+}

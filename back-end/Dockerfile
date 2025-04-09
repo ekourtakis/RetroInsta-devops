@@ -1,39 +1,28 @@
-# Dockerfile
+FROM node:slim
+RUN npm install -g pnpm@10
 
-# ---- Builder Stage ----
-# Build the TypeScript code
-FROM node:18-alpine AS builder
+# Set the WORKDIR to the monorepo root
 WORKDIR /app
 
-# Copy package files and install ALL dependencies (including dev)
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./turbo.json* ./
+# Copy ALL package.json files for the entire workspace
+# Needed for pnpm install to resolve the full workspace
+COPY ./shared-types/package.json ./packages/shared-types/package.json
+COPY ./front-end/package.json ./front-end/package.json
+COPY ./back-end/package.json ./back-end/package.json
 
-# Copy tsconfig and source code
-COPY tsconfig.json ./
-COPY src ./src
+# Install ALL workspace dependencies (including devDependencies)
+# This installs everything needed for 'tsx', 'typescript', etc.
+RUN pnpm install --frozen-lockfile
 
-# Build the TypeScript code
-RUN npm run build
-# At this point, the compiled JS is in the /app/dist directory
+# Copy ALL source code for packages needed by the backend dev server
+# Includes shared-types and backend source itself
+COPY ./shared-types ./packages/shared-types
+COPY ./back-end ./back-end
 
-# ---- Production Stage ----
-# Create the final, smaller image
-FROM node:18-alpine
-WORKDIR /app
+# Set the final WORKDIR to the backend package directory
+WORKDIR /app/back-end
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install ONLY production dependencies
-RUN npm ci --omit=dev
-
-# Copy the compiled code from the builder stage
-COPY --from=builder /app/dist ./dist
-
-# Expose the port the app runs on (adjust if needed)
-# Make sure this matches SERVER_PORT from your .env or config
 EXPOSE 3001
 
-# Command to run the compiled application
-CMD ["node", "dist/server.js"]
+CMD ["pnpm", "run", "dev"]
