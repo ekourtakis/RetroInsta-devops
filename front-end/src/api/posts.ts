@@ -1,5 +1,6 @@
 import { Post } from '../models/Post'; // Adjust path as necessary
 import { CreatePostData } from '../models/CreatePostData'
+import { CreateMinioPost } from '../models/CreateMinioPost'
 
 /**
  * Fetches all posts from the backend.
@@ -92,7 +93,7 @@ export const createPost = async (apiUrl: string, postData: CreatePostData & { us
     
     try {
 
-        const newPostData : CreatePostData = {
+        const newPostData : CreateMinioPost = {
             username: postData.username,
             profilePicPath: postData.profilePicPath,
             imagePath: minioImagePath,
