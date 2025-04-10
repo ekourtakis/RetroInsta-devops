@@ -1,12 +1,6 @@
 import './CreatePostForm.css'
 import react, {useState, ChangeEvent, FormEvent } from 'react'
-
-export interface CreatePostData {
-    username: string,
-    profilePicPath?: string,
-    imagePath: string,
-    description: string
-}
+import { CreatePostData } from '../../models/CreatePostData'
 
 interface CreatePostFormProps {
     onPostSubmit: (postData: CreatePostData) => void
@@ -17,7 +11,7 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     const [formData, setFormData] = useState<CreatePostData>({
         username: '',
         profilePicPath: '',
-        imagePath: '',
+        imagePath: null,
         description: ''
     })
 
@@ -41,7 +35,7 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     setFormData({
         username: '',
         profilePicPath: '',
-        imagePath: '',
+        imagePath: null,
         description: '',
     });
     };
@@ -59,13 +53,20 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
             onChange={handleInputChange}
         />
         <input
-            type="text"
+            type="file"
             name="imagePath"
-            placeholder="Post Image URL/file path"
-            value={formData.imagePath}
-            onChange={handleInputChange}
+            accept="image/*"
+            onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                setFormData(prev => ({ ...prev, imagePath: file }));
+            }}
             required
         />
+        {formData.imagePath && (
+            <p style={{ fontStyle: 'italic', color: 'black' }}>
+                Selected file: {formData.imagePath.name}
+            </p>
+        )}
         <textarea
             name="description"
             placeholder="Write a description of your photo..."
