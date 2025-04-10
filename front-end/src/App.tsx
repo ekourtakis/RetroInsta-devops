@@ -11,7 +11,6 @@ import { User } from './models/User';
 import { createPost, getAllPosts } from './api/posts';
 import { loginWithGoogleApi } from './api/auth';
 import { getUserDataByIdApi as getUserDataById } from './api/users';
-import { BACK_END_URL as backendUrl } from './api/config';
 const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -119,7 +118,7 @@ function App() {
     
     setAuthLoading(true);
     try {
-      const user = await getUserDataById(userId, backendUrl);
+      const user = await getUserDataById(userId);
       setAppUser(user);
     } catch (error) {
       console.error("Error restoring user session:", error);

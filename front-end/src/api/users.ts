@@ -1,16 +1,17 @@
 import { User } from '../models/User'; // Adjust path as necessary
+import { BACK_END_URL } from './config'; // Adjust path as necessary
+
+if (!BACK_END_URL) throw new Error("Backend API URL is not configured.");
 
 /**
  * Fetches user data by their MongoDB ID.
  * @param userId - The MongoDB _id of the user.
- * @param apiUrl - The base URL of the backend API.
  * @returns A promise that resolves to the User object.
  */
-export const getUserDataByIdApi = async (userId: string, apiUrl: string): Promise<User> => {
-  if (!apiUrl) throw new Error("Backend API URL is not configured.");
+export const getUserDataByIdApi = async (userId: string,): Promise<User> => {
   if (!userId) throw new Error("User ID is required to fetch user data.");
 
-  const targetUrl = `${apiUrl}/api/users/${userId}`;
+  const targetUrl = `${BACK_END_URL}/api/users/${userId}`;
   console.log(`[API] Fetching user data from: ${targetUrl}`);
 
   try {
