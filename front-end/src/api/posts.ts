@@ -46,64 +46,20 @@ export const getAllPosts = async (apiUrl: string): Promise<Post[]> => {
 export const createPost = async (apiUrl: string, postData: CreatePostData & { username: string }): Promise<Post> => {
     if (!apiUrl) throw new Error("Backend API URL is not configured.");
 
-    const minioUrl = `${apiUrl}/upload-with-presigned-url`;
     const targetUrl = `${apiUrl}/api/posts`;
     console.log(`[API] Creating post at: ${targetUrl}`, postData);
-
-    const file = postData.imagePath;
-    const fileName = postData.imagePath.name;
-    const fileType = postData.imagePath.type;
-
-    if (postData.imagePath instanceof File) {
-        console.log("File details:");
-        console.log("Name:", fileName);
-        console.log("Type:", fileType); // type (e.g., image/jpeg)
-    } else {
-        console.log("imagePath is not a valid File object.");
-    }
-
-    const imageData = new FormData();
-    imageData.append('file', file!);
-    imageData.append('filename', fileName);
-    imageData.append('fileType', fileType);
-    let minioImagePath: string;
-
-    try {
-        // Request to generate the presigned URL
-        const uploadResponse = await fetch(minioUrl, {
-            method: "PUT",
-            body: imageData,
-        });
-
-        // Check if the response is ok (status 200-299)
-        if (!uploadResponse.ok) {
-            const imageResponseData = await uploadResponse.json();
-            console.error("Error uploading file:", imageResponseData);
-            throw new Error("Error uploading file.");
-        }
-
-        // If the response is successful, parse the response as JSON and log the presigned URL
-        const imageResponseData = await uploadResponse.json();
-        console.log("view url: ", imageResponseData.viewUrl);
-        minioImagePath = imageResponseData.viewUrl
-    } catch (error) {
-        console.error("[API] Error during file upload process:", error);
-        throw error;  // Propagate error to be handled by the calling code
-    }
     
     try {
-
-        const newPostData : CreateMinioPost = {
-            username: postData.username,
-            profilePicPath: postData.profilePicPath,
-            imagePath: minioImagePath,
-            description: postData.description
+    const formData = new FormData();
+    Object.entries(postData).forEach(([key, value]) => {
+        if (value !== undefined) {
+            formData.append(key, value);
         }
+    });
         
     const response = await fetch(targetUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(newPostData),
+        body: formData,
     });
     console.log(`[API] Create post response status: ${response.status}`);
 
