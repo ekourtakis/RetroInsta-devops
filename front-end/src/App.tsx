@@ -80,7 +80,7 @@ function App() {
     }
 
     try {
-      const fetchedUser = await loginWithGoogleApi(backendUrl, {
+      const fetchedUser = await loginWithGoogleApi({
         googleId,
         email,
         profilePicPath

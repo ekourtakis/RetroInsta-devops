@@ -1,4 +1,5 @@
 import { User } from '../models/User'; // Adjust path as necessary
+import { BACK_END_URL } from './config';
 
 interface GoogleLoginPayload {
     googleId: string;
@@ -8,15 +9,14 @@ interface GoogleLoginPayload {
 
 /**
  * Sends Google login details to the backend to find or create a user.
- * @param apiUrl - The base URL of the backend API.
  * @param payload - The login details containing googleId, email, and profilePicPath.
  * @returns A promise that resolves to the User object from the backend.
  */
-export const loginWithGoogleApi = async (apiUrl: string, payload: GoogleLoginPayload): Promise<User> => {
-    if (!apiUrl) throw new Error("Backend API URL is not configured.");
+export const loginWithGoogleApi = async (payload: GoogleLoginPayload): Promise<User> => {
+    if (!BACK_END_URL) throw new Error("Backend API URL is not configured.");
     if (!payload.googleId || !payload.email) throw new Error("Missing googleId or email in login payload.");
 
-    const targetUrl = `${apiUrl}/api/auth/google/login`;
+    const targetUrl = `${BACK_END_URL}/api/auth/google/login`;
     console.log(`[API] Attempting Google login POST to: ${targetUrl}`);
 
     try {
