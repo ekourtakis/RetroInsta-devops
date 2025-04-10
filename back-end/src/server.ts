@@ -98,6 +98,34 @@ const app = express();
 app.use(cors()); // Enable CORS to allow requests from frontend
 app.use(express.json()); // Middleware to parse JSON request bodies
 
+async function storeImage(imgFile: any) {
+  try {
+    const filename = imgFile.originalname;
+    const fileType = imgFile.mimetype;
+    const fileBuffer = imgFile.buffer;
+
+    // Generate the presigned URL using the provided details (if needed)
+    const presignedUrlResponse = await axios.post("http://localhost:7005/api/generate-presigned-url", {
+      filename,
+      fileType,
+    });
+
+    const presignedUrl = presignedUrlResponse.data.presignedUrl;
+    const viewUrl = presignedUrlResponse.data.publicUrl;
+
+    // Upload the file to MinIO using the presigned URL
+    await axios.put(presignedUrl, fileBuffer, {
+      headers: {
+        "Content-Type": fileType,
+      },
+    });
+
+    return viewUrl;
+  } catch (error) {
+    console.error("Error uploading file with presigned URL:", error);
+  }
+}
+
 async function startServer() {
   try {
     await mongoose.connect(URI)
@@ -167,10 +195,23 @@ async function startServer() {
       }
     });
 
-    app.post(POSTS_ENDPOINT, async(request, response) => {
+    // POST (create) a new post & store image in MinIO
+    app.post(POSTS_ENDPOINT, upload.single("imagePath"), async(request, response) => {
       try {
-        const newPostData: Partial<IPost> = request.body
+        // set IPost data to create post object for frontend
+        let newPostData: Partial<IPost> = request.body;
 
+        // Ensure imagePath formatted properly for MinIO upload
+        const imageFile = request.file;
+        let imageURL: string;
+
+        if (imageFile) {
+          imageURL = await storeImage(imageFile);
+          console.log(`File uploaded successfully to MinIO: ${imageURL}`);
+          newPostData.imagePath = imageURL;
+        }
+
+        // if successfully upload image, create Post
         const createdPost = await Post.create(newPostData)
         response.status(201).json(createdPost)
       } catch  (error: any) {
@@ -287,41 +328,6 @@ async function startServer() {
         }
         console.error("Error updating user:", error);
         response.status(500).json({ error: "Failed to update user" });
-      }
-    });
-
-    app.put("/upload-with-presigned-url", upload.single('file'), async (req: Request, res: Response) => {
-      try {
-        const { filename, fileType } = req.body;
-        const fileBuffer = req.file?.buffer;
-    
-        if (!filename || !fileType || !fileBuffer) {
-          return res.status(400).json({ error: "Missing filename, fileType, or fileBuffer" });
-        }
-    
-        // Generate the presigned URL using the provided details (if needed)
-        const presignedUrlResponse = await axios.post("http://localhost:7005/api/generate-presigned-url", {
-          filename,
-          fileType,
-        });
-    
-        const presignedUrl = presignedUrlResponse.data.presignedUrl;
-        const viewUrl = presignedUrlResponse.data.publicUrl;
-    
-        // Upload the file to MinIO using the presigned URL
-        await axios.put(presignedUrl, fileBuffer, {
-          headers: {
-            "Content-Type": fileType,
-          },
-        });
-    
-        res.status(200).json({
-          message: "File uploaded successfully!",
-          viewUrl,
-        });
-      } catch (error) {
-        console.error("Error uploading file with presigned URL:", error);
-        res.status(500).json({ error: "Error uploading file with presigned URL" });
       }
     });
 
