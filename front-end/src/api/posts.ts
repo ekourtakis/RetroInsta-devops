@@ -1,6 +1,5 @@
 import { Post } from '../models/Post'; // Adjust path as necessary
 import { CreatePostData } from '../models/CreatePostData'
-import { CreateMinioPost } from '../models/CreateMinioPost'
 
 /**
  * Fetches all posts from the backend.
@@ -50,30 +49,29 @@ export const createPost = async (apiUrl: string, postData: CreatePostData & { us
     console.log(`[API] Creating post at: ${targetUrl}`, postData);
     
     try {
-    const formData = new FormData();
-    Object.entries(postData).forEach(([key, value]) => {
-        if (value !== undefined) {
-            formData.append(key, value);
-        }
-    });
+        const formData = new FormData();
+        Object.entries(postData).forEach(([key, value]) => {
+            if (value !== undefined) {
+                formData.append(key, value);
+            }
+        });
         
-    const response = await fetch(targetUrl, {
-        method: "POST",
-        body: formData,
-    });
-    console.log(`[API] Create post response status: ${response.status}`);
+        const response = await fetch(targetUrl, {
+            method: "POST",
+            body: formData,
+        });
+        console.log(`[API] Create post response status: ${response.status}`);
 
-    const responseData = await response.json(); // Parse JSON response
+        const responseData = await response.json(); // Parse JSON response
 
-    if (!response.ok) {
-        const errorMessage = responseData?.error || `Backend create post failed with status ${response.status}`;
-        console.error(`[API] Error creating post: ${errorMessage}`, responseData);
-        throw new Error(errorMessage);
-    }
+        if (!response.ok) {
+            const errorMessage = responseData?.error || `Backend create post failed with status ${response.status}`;
+            console.error(`[API] Error creating post: ${errorMessage}`, responseData);
+            throw new Error(errorMessage);
+        }
 
-    console.log("[API] Post created successfully:", responseData);
-    return responseData as Post; // Assume response matches Post structure
-
+        console.log("[API] Post created successfully:", responseData);
+        return responseData as Post; // Assume response matches Post structure
     } catch (error) {
         console.error(`[API] Network or parsing error creating post:`, error);
         if (error instanceof Error) throw error;
