@@ -11,6 +11,7 @@ import { User } from './models/User';
 import { createPost, getAllPosts } from './api/posts';
 import { loginWithGoogleApi } from './api/auth';
 import { getUserDataByIdApi as getUserDataById } from './api/users';
+
 const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
