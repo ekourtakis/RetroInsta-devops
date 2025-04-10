@@ -1,5 +1,5 @@
-import { Post } from '../models/Post'; // Adjust path as necessary
-import { CreatePostData } from '../components/CreatePostForm/CreatePostForm'; // Adjust path
+import { Post } from '../models/Post';
+import { CreatePostData } from '../components/CreatePostForm/CreatePostForm';
 import { BACK_END_URL } from './config';
 
 if (!BACK_END_URL) throw new Error("Backend API URL is not configured.");
