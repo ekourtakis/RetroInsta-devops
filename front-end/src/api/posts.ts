@@ -1,15 +1,13 @@
 import { Post } from '../models/Post'; // Adjust path as necessary
 import { CreatePostData } from '../models/CreatePostData'
+import { BACKEND_URL } from './config';
 
 /**
  * Fetches all posts from the backend.
- * @param apiUrl - The base URL of the backend API.
  * @returns A promise that resolves to an array of Post objects.
  */
-export const getAllPosts = async (apiUrl: string): Promise<Post[]> => {
-    if (!apiUrl) throw new Error("Backend API URL is not configured.");
-
-    const targetUrl = `${apiUrl}/api/posts`;
+export const getAllPosts = async (): Promise<Post[]> => {
+    const targetUrl = `${BACKEND_URL}/api/posts`;
     console.log(`[API] Fetching posts from: ${targetUrl}`);
 
     try {
@@ -38,14 +36,11 @@ export const getAllPosts = async (apiUrl: string): Promise<Post[]> => {
 
 /**
  * Creates a new post on the backend.
- * @param apiUrl - The base URL of the backend API.
  * @param postData - The data for the new post (should include username).
  * @returns A promise that resolves to the newly created Post object.
  */
-export const createPost = async (apiUrl: string, postData: CreatePostData & { username: string }): Promise<Post> => {
-    if (!apiUrl) throw new Error("Backend API URL is not configured.");
-
-    const targetUrl = `${apiUrl}/api/posts`;
+export const createPost = async (postData: CreatePostData & { username: string }): Promise<Post> => {
+    const targetUrl = `${BACKEND_URL}/api/posts`;
     console.log(`[API] Creating post at: ${targetUrl}`, postData);
     
     try {

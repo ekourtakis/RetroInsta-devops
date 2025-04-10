@@ -4,7 +4,7 @@ import PostFeed from "./components/PostFeed/PostFeed";
 import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
-import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
+import { CreatePostData } from './models/CreatePostData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
 import { User } from './models/User';
@@ -26,7 +26,7 @@ function App() {
 
   const fetchPosts = async () => {
     try {
-      const fetchedPosts = await getAllPosts(backendUrl);
+      const fetchedPosts = await getAllPosts();
       setPosts(fetchedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -53,7 +53,7 @@ function App() {
 
     try {
       const dataToSend = { ...postData, username: appUser.username };
-      await createPost(backendUrl, dataToSend);
+      await createPost(dataToSend);
       await fetchPosts(); // Refresh posts after creating a new one
       setIsCreatePostFormVisible(false); // Hide the form after submission
     } catch (error) {
@@ -81,7 +81,7 @@ function App() {
     }
 
     try {
-      const fetchedUser = await loginWithGoogleApi(backendUrl, {
+      const fetchedUser = await loginWithGoogleApi({
         googleId,
         email,
         profilePicPath
@@ -120,7 +120,7 @@ function App() {
     
     setAuthLoading(true);
     try {
-      const user = await getUserDataById(userId, backendUrl);
+      const user = await getUserDataById(userId);
       setAppUser(user);
     } catch (error) {
       console.error("Error restoring user session:", error);
