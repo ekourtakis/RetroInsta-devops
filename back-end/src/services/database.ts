@@ -63,13 +63,13 @@ export const initializeData = async (): Promise<void> => {
       },
       { 
         username: "danny_dev", 
-        profilePicPath: "/testimage/dev.jpeg", 
+        profilePicPath: "/testimage/man.jpeg", 
         imagePath: "/testimage/code.jpeg", 
         description: "Coding is life!" 
       },
       { 
         username: "emma_writes", 
-        profilePicPath: "/testimage/writer.jpeg", 
+        profilePicPath: "/testimage/avatar.jpeg", 
         imagePath: "/testimage/book.jpeg", 
         description: "Books are a uniquely portable magic." 
       }
