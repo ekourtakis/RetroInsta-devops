@@ -25,7 +25,7 @@ function App() {
 
   const fetchPosts = async () => {
     try {
-      const fetchedPosts = await getAllPosts(backendUrl);
+      const fetchedPosts = await getAllPosts();
       setPosts(fetchedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -52,7 +52,7 @@ function App() {
 
     try {
       const dataToSend = { ...postData, username: appUser.username };
-      await createPost(backendUrl, dataToSend);
+      await createPost(dataToSend);
       await fetchPosts(); // Refresh posts after creating a new one
       setIsCreatePostFormVisible(false); // Hide the form after submission
     } catch (error) {
