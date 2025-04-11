@@ -17,7 +17,7 @@ const SideBar: React.FC = () => {
           </Link>
         </li>
         <li className="sidebar-item">
-          <Link to="/explore" className="sidebar-link">
+          <Link to="/" className="sidebar-link">
           <TravelExploreIcon className="sidebar-icon" />
             Explore
           </Link>

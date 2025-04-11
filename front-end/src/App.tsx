@@ -12,6 +12,10 @@ import { User } from './models/User';
 import { createPost, getAllPosts } from './api/posts';
 import { loginWithGoogleApi } from './api/auth';
 import { getUserDataByIdApi as getUserDataById } from './api/users';
+import { Routes, Route } from 'react-router-dom';
+import ProfilePage from './components/ProfilePage/ProfilePage';
+import AddPost from './components/AddPost/AddPost';
+
 
 const backendUrl = "http://localhost:7005" // TODO: move to env variable
 const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
@@ -141,7 +145,7 @@ function App() {
       <div className="App">
       <SideBar />
         {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
-        <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
+        <div className="main-content" style={{ marginLeft: '20px', padding: '10px' }}>
         <Navbar 
           user={appUser}
           authLoading={authLoading}
@@ -153,9 +157,41 @@ function App() {
         {isCreatePostFormVisible && (
           <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
         )}
+        <Routes>
+            <Route
+              path="/"
+              element={
         <div className="Posts">
           {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
         </div>
+        }
+        />
+        <Route
+          path="/profile"
+          element={
+            appUser ? (
+              <ProfilePage
+                user={appUser}
+                posts={posts}
+                onLogout={handleLogout}
+                onToggleCreatePostForm={toggleCreatePostForm}
+              />
+            ) : (
+              <p>Please log in to view your profile.</p>
+            )
+          }
+        />
+         <Route path="/addPost" element={
+    <AddPost 
+      user={appUser}
+      authLoading={authLoading}
+      onLoginSuccess={handleLoginSuccess}
+      onLoginError={handleLoginError}
+      onLogout={handleLogout}
+      onPostSubmit={handleCreatePostSubmit}
+    />
+  } />
+      </Routes>
       </div>
       </div>
     </GoogleOAuthProvider>
