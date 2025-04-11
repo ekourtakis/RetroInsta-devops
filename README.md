@@ -1,4 +1,7 @@
+<img src="front-end/public/insta.png" alt="RetroInsta Preview" width="200">
+
 # RetroInsta - A Day One Instagram Clone
+
 RetroInsta aims to replicate Instagram's initial feature set. Users can log in with their Google Accounts, post a photo with a filter applied, like other user's posts, follow other accounts, see a feed of posts from accounts they follow, and see an explore page which features popular posts site-wide.
 
 ## Vision Statement
