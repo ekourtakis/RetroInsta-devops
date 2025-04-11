@@ -5,7 +5,7 @@ import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
 import SideBar from "./components/SideBar/SideBar";
 import { useEffect, useState } from "react";
 import { Post } from "./models/Post"
-import { CreatePostData } from './components/CreatePostForm/CreatePostForm';
+import { CreatePostData } from './models/CreatePostData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from './models/GoogleIdTokenPayload';
 import { User } from './models/User';
@@ -13,7 +13,6 @@ import { createPost, getAllPosts } from './api/posts';
 import { loginWithGoogleApi } from './api/auth';
 import { getUserDataByIdApi as getUserDataById } from './api/users';
 
-const backendUrl = "http://localhost:7005" // TODO: move to env variable
 const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -27,7 +26,7 @@ function App() {
 
   const fetchPosts = async () => {
     try {
-      const fetchedPosts = await getAllPosts(backendUrl);
+      const fetchedPosts = await getAllPosts();
       setPosts(fetchedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -54,7 +53,7 @@ function App() {
 
     try {
       const dataToSend = { ...postData, username: appUser.username };
-      await createPost(backendUrl, dataToSend);
+      await createPost(dataToSend);
       await fetchPosts(); // Refresh posts after creating a new one
       setIsCreatePostFormVisible(false); // Hide the form after submission
     } catch (error) {
@@ -82,7 +81,7 @@ function App() {
     }
 
     try {
-      const fetchedUser = await loginWithGoogleApi(backendUrl, {
+      const fetchedUser = await loginWithGoogleApi({
         googleId,
         email,
         profilePicPath
@@ -121,7 +120,7 @@ function App() {
     
     setAuthLoading(true);
     try {
-      const user = await getUserDataById(userId, backendUrl);
+      const user = await getUserDataById(userId);
       setAppUser(user);
     } catch (error) {
       console.error("Error restoring user session:", error);

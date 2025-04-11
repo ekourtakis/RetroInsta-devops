@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e # Exit immediately if a command exits with a non-zero status.
 
 echo 'Waiting for MinIO service (http://minio:9000)...'
@@ -22,5 +22,10 @@ else
   mc mb myminio/posts
   echo 'Bucket posts created.'
 fi
+
+# Set the bucket to public
+echo 'Configuring bucket posts to be public...'
+mc anonymous set public myminio/posts
+echo 'Bucket posts is now public.'
 
 exit 0
