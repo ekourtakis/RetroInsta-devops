@@ -2,7 +2,7 @@ import { User } from '../models/User';
 import { BACKEND_URL } from './config';
 
 interface GoogleLoginPayload {
-    googleId: string;
+    googleID: string;
     email: string;
     profilePicPath?: string;
 }
@@ -13,7 +13,7 @@ interface GoogleLoginPayload {
  * @returns A promise that resolves to the User object from the backend.
  */
 export const loginWithGoogleApi = async (payload: GoogleLoginPayload): Promise<User> => {
-    if (!payload.googleId || !payload.email) throw new Error("Missing googleId or email in login payload.");
+    if (!payload.googleID || !payload.email) throw new Error("Missing googleId or email in login payload.");
 
     const targetUrl = `${BACKEND_URL}/api/auth/google/login`;
     console.log(`[API] Attempting Google login POST to: ${targetUrl}`);
