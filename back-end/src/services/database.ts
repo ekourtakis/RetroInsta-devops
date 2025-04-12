@@ -44,15 +44,14 @@ export const initializeData = async (): Promise<void> => {
 
     const imagePaths = [
       "avatar.jpeg",
+      "bonsai.jpeg",
       "bridge.jpeg",
-      "insta.png",
       "man.jpeg",
       "mountain.jpeg",
       "eye.jpeg",
       "camera.jpeg",
       "elephant.jpeg",
       "hooter.jpeg",
-      "bonsai.jpeg",
       "error.png",
       "crash.jpeg",
       "zion.jpeg",
