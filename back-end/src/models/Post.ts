@@ -2,19 +2,21 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 import { POSTS_COLLECTION } from '../config/index.js';
 
 export interface IPost extends Document {
-  username: string;
-  profilePicPath?: string;
+  authorID: string; // mongo ID of the user who authored the post
+  
   imagePath?: string;
   description?: string;
+  likes?: number;
+  
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 const postSchema: Schema<IPost> = new Schema({
-  username: { type: String, required: true, index: true },
-  profilePicPath: { type: String, required: false },
+  authorID: { type: String, required: true, index: true },
   imagePath: { type: String, required: true },
   description: { type: String, required: false },
+  likes: { type: Number, default: 0 },
 }, {
   timestamps: true, // creates createdAt and updatedAt fields
   collection: POSTS_COLLECTION

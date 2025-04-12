@@ -41,20 +41,18 @@ router.get('/:id', async (req: Request, res: Response) => {
 // POST /api/users
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { googleId, email, username, profilePicPath, bio, postIDs } = req.body;
+    const { googleId, username, profilePicPath, bio, postIDs } = req.body;
 
     // Robust validation
-    if (!googleId || !email || !username || !profilePicPath) {
-      return res.status(400).json({ error: "Missing required user fields (googleId, email, username, profilePicPath)" });
+    if (!googleId || !username || !profilePicPath) {
+      return res.status(400).json({ error: "Missing required user fields (googleId, username, profilePicPath)" });
     }
 
     const newUser_Data: Partial<IUser> = {
       googleId,
-      email,
       username,
       profilePicPath,
       bio: bio || '',
-      postIDs: postIDs || [],
     };
 
     const createdUser = await User.create(newUser_Data);
@@ -87,7 +85,6 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     // Prevent updating immutable or sensitive fields from the request body
     delete updateData.googleId;
-    delete updateData.email; // Usually email shouldn't be changed easily
     delete (updateData as any).createdAt;
     delete (updateData as any).updatedAt;
 
