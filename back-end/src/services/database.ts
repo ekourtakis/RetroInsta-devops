@@ -56,6 +56,14 @@ export const initializeData = async (): Promise<void> => {
       "crash.jpeg",
       "zion.jpeg",
       "joshua.jpeg",
+      "goggles.jpeg",
+      "puppy.jpeg",
+      "jpeg.jpeg",
+      "temple.jpeg",
+      "spirit.jpeg",
+      "12th-street.jpeg",
+      "learning.jpeg",
+      "stale.jpeg"
     ]
 
     const initialUsers: Partial<IUser>[] = [
