@@ -32,6 +32,17 @@ router.post('/', upload.single("imagePath"), async (req: Request, res: Response)
 
     // Create the post in the database
     const createdPost = await Post.create(newPostData);
+
+    // Update the user's authoredPostIDs
+    if (newPostData.authorID) {
+      await mongoose.model('User').findByIdAndUpdate(
+        newPostData.authorID,
+        { $push: { authoredPostIDs: createdPost._id } },
+        { new: true, useFindAndModify: false }
+      );
+      console.log(`User ${newPostData.authorID} updated with new post ID: ${createdPost._id}`);
+    }
+
     res.status(201).json(createdPost); // 201 Created status
   } catch (error: any) {
     if (error instanceof mongoose.Error.ValidationError) {
