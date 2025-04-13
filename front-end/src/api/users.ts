@@ -6,7 +6,7 @@ import { BACKEND_URL } from './config';
  * @param userId - The MongoDB _id of the user.
  * @returns A promise that resolves to the User object.
  */
-export const getUserDataByIdApi = async (userId: string): Promise<User> => {
+export const getUserById = async (userId: string): Promise<User> => {
   if (!userId) throw new Error("User ID is required to fetch user data.");
 
   const targetUrl = `${BACKEND_URL}/api/users/${userId}`;
@@ -24,7 +24,7 @@ export const getUserDataByIdApi = async (userId: string): Promise<User> => {
           throw new Error(errorMessage);
       }
 
-      if (!responseData?._id || !responseData?.email || !responseData?.username) {
+      if (!responseData?._id || !responseData?.username) {
           console.error("[API] Received invalid user data structure:", responseData);
           throw new Error("Received invalid user data structure from backend.");
       }
