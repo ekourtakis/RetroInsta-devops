@@ -1,7 +1,9 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 import { POSTS_COLLECTION } from '../config/index.js';
 
 export interface IPost extends Document {
+  _id: Types.ObjectId; // MongoDB ID
+
   authorID: string; // mongo ID of the user who authored the post
   
   imagePath?: string;

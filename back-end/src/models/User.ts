@@ -2,6 +2,8 @@ import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 import { USERS_COLLECTION } from '../config/index.js';
 
 export interface IUser extends Document {
+  _id: Types.ObjectId; // MongoDB ObjectId
+  
   googleId: string;
   username: string;
   profilePicPath: string;
