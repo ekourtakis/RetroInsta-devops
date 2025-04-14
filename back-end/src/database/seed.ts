@@ -136,7 +136,8 @@ export const initializeData = async (): Promise<void> => {
             "eye.jpeg", "camera.jpeg", "elephant.jpeg", "hooter.jpeg", "error.png",
             "crash.jpeg", "zion.jpeg", "joshua.jpeg", "goggles.jpeg", "puppy.jpeg",
             "jpeg.jpeg", "temple.jpeg", "spirit.jpeg", "12th-street.jpeg",
-            "learning.jpeg", "stale.jpeg"
+            "learning.jpeg", "stale.jpeg", "smart.jpeg", "godzilla.jpeg", "schedule.jpeg",
+            "equality.jpeg", "manatee.jpeg", "dijkstra.jpeg", "acadia.jpeg", "squirrel.jpeg",
         ];
 
         // --- User Initialization ---
