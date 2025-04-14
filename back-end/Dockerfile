@@ -1,5 +1,3 @@
-# Dockerfile
-
 # ---- Builder Stage ----
 # Build the TypeScript code
 FROM node:18-alpine AS builder
@@ -31,9 +29,10 @@ RUN npm ci --omit=dev
 # Copy the compiled code from the builder stage
 COPY --from=builder /app/dist ./dist
 
-# Expose the port the app runs on (adjust if needed)
-# Make sure this matches SERVER_PORT from your .env or config
-EXPOSE 3001
+COPY ./seed-images ./seed-images
+
+# Expose the port the app runs on
+EXPOSE 7005
 
 # Command to run the compiled application
 CMD ["node", "dist/server.js"]
