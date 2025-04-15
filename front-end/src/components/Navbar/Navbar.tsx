@@ -15,11 +15,9 @@ interface NavbarProps {
 
 export default function Navbar({
   user,
-  authLoading,
   onLoginSuccess,
   onLoginError,
   onLogout,
-  onToggleCreatePostForm,
 }: NavbarProps 
 ) {
   return (
@@ -40,14 +38,7 @@ export default function Navbar({
             <li className="navbar-item">
               <span className="user-greeting">{user?.username}</span>
             </li>
-            <li className="navbar-item"> {/* Item for Make Post button */}
-              <button
-                onClick={onToggleCreatePostForm}
-                className="navbar-button make-post-button"
-              >
-                Make a Post
-              </button>
-            </li>
+            
             {/* Remove the extra div around the logout button */}
             <li className="navbar-item"> {/* Item for Logout button */}
               <button

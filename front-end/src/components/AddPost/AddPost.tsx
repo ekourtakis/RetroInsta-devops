@@ -27,7 +27,7 @@ const CreatePostPage: React.FC<CreatePostPageProps> = ({
   return (
     <div className="create-post-page">
       <SideBar />
-      <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
+      <div className="main-content" style={{ marginLeft: '20px', padding: '20px' }}>
         <Navbar
           user={user}
           authLoading={authLoading}

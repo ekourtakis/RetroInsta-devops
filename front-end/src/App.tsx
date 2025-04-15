@@ -145,7 +145,7 @@ function App() {
       <div className="App">
       <SideBar />
         {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
-        <div className="main-content" style={{ marginLeft: '20px', padding: '10px' }}>
+        <div className="main-content" style={{ marginLeft: '250px', padding: '10px' }}>
         <Navbar 
           user={appUser}
           authLoading={authLoading}
@@ -166,8 +166,7 @@ function App() {
         </div>
         }
         />
-        <Route
-          path="/profile"
+        <Route path="/profile"
           element={
             appUser ? (
               <ProfilePage
@@ -181,7 +180,10 @@ function App() {
             )
           }
         />
-         <Route path="/addPost" element={
+
+         <Route path="/addPost" 
+         element={
+          appUser ? (
     <AddPost 
       user={appUser}
       authLoading={authLoading}
@@ -190,6 +192,9 @@ function App() {
       onLogout={handleLogout}
       onPostSubmit={handleCreatePostSubmit}
     />
+  ) : (
+    <p>Please log in to add a post.</p>
+  )
   } />
       </Routes>
       </div>

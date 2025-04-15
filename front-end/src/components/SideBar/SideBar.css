@@ -9,6 +9,7 @@
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
     overflow-y: auto; /* Enable scrolling if content overflows */
+    z-index: 1000; 
 }
 
 .sidebar-title {
