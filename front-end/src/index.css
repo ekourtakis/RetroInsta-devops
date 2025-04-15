@@ -88,6 +88,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input[type="text"],
+textarea {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
