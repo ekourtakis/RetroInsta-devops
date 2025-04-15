@@ -63,4 +63,48 @@ export const minioClient = new MinioClient({
   secretKey: MINIO_SECRET_KEY,
 });
 
+// --- MinIO Bucket Initialization ---
+(async () => {
+  const bucketName = MINIO_BUCKET;
+  const region = process.env.MINIO_REGION || 'us-east-1';
+
+  try {
+    console.log(`Checking if MinIO bucket "${bucketName}" exists...`);
+    const exists = await minioClient.bucketExists(bucketName);
+
+    if (!exists) {
+      console.log(`Bucket "${bucketName}" does not exist. Creating...`);
+      await minioClient.makeBucket(bucketName, region);
+      console.log(`Bucket "${bucketName}" created successfully in region "${region}".`);
+    } else {
+      console.log(`Bucket "${bucketName}" already exists.`);
+    }
+
+    // Define the public read policy
+    // This policy allows anyone (*) to perform GetObject on any object (/*) within the bucket.
+    const publicPolicy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Principal: '*',
+          Action: ['s3:GetObject'],
+          Resource: [`arn:aws:s3:::${bucketName}/*`],
+        },
+      ],
+    };
+
+    console.log(`Setting public-read policy for bucket "${bucketName}"...`);
+    await minioClient.setBucketPolicy(bucketName, JSON.stringify(publicPolicy));
+    console.log(`Public-read policy set for bucket "${bucketName}".`);
+
+    console.log(`MinIO bucket "${bucketName}" initialization complete.`);
+
+  } catch (err: any) {
+    console.error(`Error initializing MinIO bucket "${bucketName}":`, err.message || err);
+  }
+})(); // Execute the async function immediately
+
+// --- End MinIO Bucket Initialization ---
+
 console.log("Configuration loaded successfully.");

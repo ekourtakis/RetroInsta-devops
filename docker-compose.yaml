@@ -57,21 +57,6 @@ services:
         timeout: 3s
         retries: 5
         start_period: 5s # Give minio time to initialize
-  
-  # This service runs once after minio is healthy to ensure the bucket exists
-  create-bucket:
-    container_name: create-bucket
-    # Use the official mc image from the same registry source
-    image: quay.io/minio/mc:latest
-    depends_on:
-      minio:
-        condition: service_healthy # Waits for minio healthcheck to pass
-    volumes:
-      # Mount the script into the container
-      - ./minio/create-bucket.sh:/usr/local/bin/create-bucket.sh
-    # Set the entrypoint to run the mounted script
-    entrypoint: ["/usr/local/bin/create-bucket.sh"]
-    restart: "no"
 
 volumes:
   database-v:
