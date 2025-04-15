@@ -59,18 +59,18 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
                   id="file-input"
                   className="file-input"
                   type="file"
-                  name="imagePath"
+                  name="imageFile" // Match the key in the formData object
                   accept="image/*"
                   onChange={(e) => {
                       const file = e.target.files?.[0] || null;
-                      setFormData(prev => ({ ...prev, imagePath: file }));
+                      setFormData(prev => ({ ...prev, imageFile: file })); // Use imageFile
                   }}
                   required
                   style={{ display: 'none' }}
               />
-              {formData.imagePath && (
+              {formData.imageFile && (
                   <p style={{ fontStyle: 'italic', color: 'black' }}>
-                      Selected file: {formData.imagePath.name}
+                      Selected file: {formData.imageFile.name}
                   </p>
               )}
               <textarea
