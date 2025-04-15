@@ -13,7 +13,7 @@ import {
     SERVER_HOST,
     SERVER_PORT,
     API_BASE_PATHS // <--- ADD THIS IMPORT
-} from '../config/index.js';
+} from '../config/config.js';
 
 // Models - Adjust paths as needed
 import Post, { IPost } from '../models/Post.js';
@@ -131,7 +131,7 @@ export const initializeData = async (): Promise<void> => {
         }
 
         // List of base filenames
-        const availableImageFiles = [ /* ... */
+        const availableImageFiles = [ 
             "avatar.jpeg", "bonsai.jpeg", "bridge.jpeg", "man.jpeg", "mountain.jpeg",
             "eye.jpeg", "camera.jpeg", "elephant.jpeg", "hooter.jpeg", "error.png",
             "crash.jpeg", "zion.jpeg", "joshua.jpeg", "goggles.jpeg", "puppy.jpeg",
