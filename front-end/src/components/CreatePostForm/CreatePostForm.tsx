@@ -1,5 +1,5 @@
 import './CreatePostForm.css'
-import react, {useState, ChangeEvent, FormEvent } from 'react'
+import {useState, ChangeEvent, FormEvent } from 'react'
 import { CreatePostData } from '../../models/CreatePostData'
 
 interface CreatePostFormProps {
@@ -26,8 +26,8 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default browser form submission
     // Basic validation (optional, add more robust validation as needed)
-    if (!formData.description || !formData.imagePath) {
-        alert("Please fill in username, image URL, and description.");
+    if (!formData.imagePath) {
+        alert("Please upload image.");
         return;
     }
     onPostSubmit(formData);
@@ -44,14 +44,6 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     <div className="create-post-form-container">
         <h2>Create a Post</h2>
         <form onSubmit={handleSubmit}>
-
-        <input
-            type="text"
-            name="profilePicPath"
-            placeholder="Profile Pic URL/file path (Optional)"
-            value={formData.profilePicPath || ''} // Handle potential undefined value
-            onChange={handleInputChange}
-        />
         <input
             type="file"
             name="imagePath"
@@ -69,10 +61,9 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
         )}
         <textarea
             name="description"
-            placeholder="Write a description of your photo..."
+            placeholder="Write an optional description of your photo..."
             value={formData.description}
             onChange={handleInputChange}
-            required
         />
         <button type="submit">Post</button>
         </form>
