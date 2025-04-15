@@ -122,10 +122,12 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  background-color: #007bff; /* Primary button color */
+  color: white; /* White text */
 }
 
 .comment-submit:hover {
-  background-color: #ddd;
+  background-color: #0056b3; /* Darker shade on hover */
 }
 
 .comment-submit:active {
@@ -211,6 +213,12 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  background-color: #007bff; /* Primary button color */
+  color: white; /* White text */
+}
+
+.comment-submit:hover {
+  background-color: #0056b3; /* Darker shade on hover */
 }
 
 .close-button {
