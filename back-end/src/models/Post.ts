@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model, Types } from 'mongoose';
-import { POSTS_COLLECTION } from '../config/index.js';
+import { POSTS_COLLECTION } from '../config/config.js';
 
 export interface IPost extends Document {
   _id: Types.ObjectId; // MongoDB ID

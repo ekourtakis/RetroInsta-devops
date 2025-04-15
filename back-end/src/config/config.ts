@@ -17,7 +17,7 @@ export const MONGO_URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 // --- Server Configuration ---
 export const SERVER_HOST = process.env.SERVER_HOST;
 export const SERVER_PORT = process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT, 10) : 7005;
-export const BACKEND_URL = process.env.BACKEND_URL
+export const BACKEND_URL = process.env.BACKEND_URL;
 
 if (isNaN(SERVER_PORT)) {
     console.error("Error: Invalid SERVER_PORT environment variable!");

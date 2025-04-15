@@ -3,7 +3,7 @@ import cors from 'cors';
 import http from 'http'; // Import http to type the 'server' variable if needed
 
 // Import configuration
-import { SERVER_PORT, SERVER_HOST, API_BASE_PATHS } from './config/index.js'; // Use index.js
+import { SERVER_PORT, SERVER_HOST, API_BASE_PATHS } from './config/config.js'; // Use index.js
 
 // Import database functions - Assuming seed.js is now in database/
 import { connectDB } from './database/database.js';

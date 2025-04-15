@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model, Types } from 'mongoose';
-import { USERS_COLLECTION } from '../config/index.js';
+import { USERS_COLLECTION } from '../config/config.js';
 
 export interface IUser extends Document {
   _id: Types.ObjectId; // MongoDB ObjectId
