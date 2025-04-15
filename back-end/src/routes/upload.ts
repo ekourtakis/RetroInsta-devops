@@ -1,7 +1,8 @@
 import express, { Request, Response, Router } from 'express';
 import multer, { Multer } from 'multer';
 import axios from 'axios'; // Ensure axios is imported
-import { minioClient, MINIO_BUCKET, SERVER_PORT, SERVER_HOST, BACKEND_URL } from '../config/index.js'; // Import necessary config
+import { minioClient, MINIO_BUCKET, SERVER_PORT, SERVER_HOST, BACKEND_URL } from '../config/config.js'; // Import necessary config
+import { v4 as uuidv4 } from 'uuid';
 
 const router: Router = express.Router();
 
@@ -13,13 +14,15 @@ export const upload: Multer = multer({
 
 export async function storeImage(imgFile: any) {
   try {
-    const filename = imgFile.originalname;
+    const originalFilename = imgFile.originalname;
+    const uniqueId = uuidv4(); // Generate a unique identifier
+    const uniqueFilename = `${uniqueId}-${originalFilename}`; // Append the unique ID to the filename
     const fileType = imgFile.mimetype;
     const fileBuffer = imgFile.buffer;
 
-    // Generate the presigned URL using the provided details (if needed)
+    // Generate the presigned URL using the unique filename
     const presignedUrlResponse = await axios.post("http://localhost:7005/api/generate-presigned-url", {
-      filename,
+      filename: uniqueFilename,
       fileType,
     });
 
@@ -33,9 +36,10 @@ export async function storeImage(imgFile: any) {
       },
     });
 
-    return viewUrl;
+    return viewUrl; // Return the public URL for the uploaded file
   } catch (error) {
     console.error("Error uploading file with presigned URL:", error);
+    throw error;
   }
 }
 

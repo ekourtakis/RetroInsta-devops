@@ -1,12 +1,12 @@
-import { Post } from '../models/Post'; // Adjust path as necessary
-import { CreatePostData } from '../models/CreatePostData'
+import { BackendPost } from '../models/Post'; // Adjust path as necessary
+import { CreatePostPayload } from '../models/CreatePostData'
 import { BACKEND_URL } from './config';
 
 /**
  * Fetches all posts from the backend.
  * @returns A promise that resolves to an array of Post objects.
  */
-export const getAllPosts = async (): Promise<Post[]> => {
+export const getAllPosts = async (): Promise<BackendPost[]> => {
     const targetUrl = `${BACKEND_URL}/api/posts`;
     console.log(`[API] Fetching posts from: ${targetUrl}`);
 
@@ -24,9 +24,10 @@ export const getAllPosts = async (): Promise<Post[]> => {
         }
 
         const data = await response.json();
+        
         console.log("[API] Posts fetched successfully:", data.length);
-        return data as Post[];
-
+        
+        return data as BackendPost[];
     } catch (error) {
         console.error(`[API] Network or parsing error fetching posts:`, error);
         if (error instanceof Error) throw error;
@@ -36,37 +37,43 @@ export const getAllPosts = async (): Promise<Post[]> => {
 
 /**
  * Creates a new post on the backend.
- * @param postData - The data for the new post (should include username).
+ * @param payload - The data for the new post including authorID and image file.
  * @returns A promise that resolves to the newly created Post object.
  */
-export const createPost = async (postData: CreatePostData & { username: string }): Promise<Post> => {
+export const createPost = async (payload: CreatePostPayload): Promise<BackendPost> => {
     const targetUrl = `${BACKEND_URL}/api/posts`;
-    console.log(`[API] Creating post at: ${targetUrl}`, postData);
+    console.log(`[API] Creating post at: ${targetUrl}`, payload);
+
+    if (!payload.authorID || !payload.imageFile) { 
+        throw new Error(
+            "Missing required fields: authorID or imageFile in createPost payload."
+        );
+    }
     
     try {
         const formData = new FormData();
-        Object.entries(postData).forEach(([key, value]) => {
-            if (value !== undefined) {
-                formData.append(key, value);
-            }
-        });
-        
+        formData.append("authorID", payload.authorID);
+        formData.append("imagePath", payload.imageFile);
+        if (payload.description) {
+            formData.append("description", payload.description);
+        }
+
         const response = await fetch(targetUrl, {
             method: "POST",
             body: formData,
         });
+
         console.log(`[API] Create post response status: ${response.status}`);
 
-        const responseData = await response.json(); // Parse JSON response
+        const responseData = await response.json();
 
         if (!response.ok) {
-            const errorMessage = responseData?.error || `Backend create post failed with status ${response.status}`;
-            console.error(`[API] Error creating post: ${errorMessage}`, responseData);
-            throw new Error(errorMessage);
+            const errorMessage = await responseData?.text() || `Backend create post failed with status ${response.status}`;
+            console.error(`[API] Create post error response:`, errorMessage);
+            throw new Error(errorMessage)
         }
 
-        console.log("[API] Post created successfully:", responseData);
-        return responseData as Post; // Assume response matches Post structure
+        return responseData as BackendPost;
     } catch (error) {
         console.error(`[API] Network or parsing error creating post:`, error);
         if (error instanceof Error) throw error;

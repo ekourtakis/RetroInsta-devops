@@ -1,11 +1,18 @@
-export interface Post {
-    id: number;
-    username: string;
+import { User } from './User';
+
+export interface BackendPost {
+    _id: string;
+    authorID: string;
     profilePicPath: string;
     imagePath: string;
-    description: string;
+    description?: string;
     likes: number;
-    comments: Comment[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface DisplayPost extends Omit<BackendPost, 'authorID'> {
+    author: User; // this will be populated with the user data from the backend
 }
 
 export interface Comment {
@@ -13,4 +20,3 @@ export interface Comment {
     text: string;
     author: string;
 }
-  
