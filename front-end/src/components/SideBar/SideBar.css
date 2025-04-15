@@ -2,14 +2,15 @@
     position: fixed;
     top: 60px;
     left: 0;
-    width: 250px; 
+    width: 200px; 
     height: 100vh; /* Full height of the viewport */
-    background-color: #333; /* Dark gray background */
+    background-color: #2F2F2F; /* Dark gray background */
     border-right: 1px solid #ccc; /* Optional border for separation */
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
     overflow-y: auto; /* Enable scrolling if content overflows */
     z-index: 1000; 
+    transition: width 0.3s ease, padding 0.3s ease; /* Smooth transition for width and padding changes */
 }
 
 .sidebar-title {
@@ -20,8 +21,8 @@
 
 .sidebar-menu {
     list-style: none;
-    padding: 50;
-    margin: 0;
+    padding: 0;
+    margin: 5;
 }
 
 .sidebar-item {
@@ -44,5 +45,29 @@
 }
 
 .sidebar-link:hover {
-    color: #ccc; /* Darker grey on hover */
+    color: #8ED2C9; /* color change on hover */
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 50px;
+        padding: 10px;
+    }
+
+    .sidebar-title {
+        display: none; /* Hide title in collapsed state */
+    }
+
+    .sidebar-link {
+        justify-content: center; /* Center icons in collapsed state */
+    }
+
+    .sidebar-link span {
+        display: none; /* Hide text in collapsed state */
+    }
+
+    .sidebar-icon {
+        font-size: 1.8rem; /* Slightly larger icons in collapsed state */
+    }
 }

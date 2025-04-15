@@ -1,7 +1,7 @@
 /* src/components/CreatePostForm/CreatePostForm.css */
 
 .create-post-form-container {
-    max-width: 550px; /* Limit the width */
+    max-width: 600px; /* Limit the width */
     margin: 2rem auto; /* Center the form horizontally, add space above/below */
     padding: 2rem; /* Add padding inside the container */
     border: 1px solid #e0e0e0; /* Subtle border */
@@ -13,7 +13,7 @@
   .create-post-form-container h2 {
     text-align: center; /* Center the title */
     margin-bottom: 1.5rem; /* Space below the title */
-    color: #333; /* Darker text color */
+    color: #1C1C1C; /* Darker text color */
     font-weight: 600;
   }
   
@@ -46,21 +46,21 @@
   /* Style placeholders */
   .create-post-form-container input[type="text"]::placeholder,
   .create-post-form-container textarea::placeholder {
-    color: #999; /* Lighter color for placeholder text */
+    color: #5E5E5E; /* Lighter color for placeholder text */
   }
   
   /* Style inputs/textarea on focus for better feedback */
   .create-post-form-container input[type="text"]:focus,
   .create-post-form-container textarea:focus {
     outline: none; /* Remove default browser outline */
-    border-color: #007bff; /* Highlight border with a primary color */
+    border-color: #8ED2C9; /* Highlight border with a primary color */
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); /* Add a subtle glow effect */
   }
   
   /* Style the submit button */
   .create-post-form-container button[type="submit"] {
     padding: 12px 20px; /* Generous padding */
-    background-color: #007bff; /* Primary button color */
+    background-color: #007BFF26; /* Primary button color */
     color: white; /* White text */
     border: none; /* Remove default border */
     border-radius: 4px; /* Match input rounding */
@@ -73,7 +73,7 @@
   
   /* Style button on hover */
   .create-post-form-container button[type="submit"]:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #6C9A8B; /* Darker shade on hover */
   }
   
   /* Optional: Style for required fields (if you want visual cues) */

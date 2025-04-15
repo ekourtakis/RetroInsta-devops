@@ -1,6 +1,4 @@
 import React from 'react';
-import Navbar from '../Navbar/Navbar';
-import SideBar from '../SideBar/SideBar';
 import CreatePostForm from '../CreatePostForm/CreatePostForm';
 import { CredentialResponse } from '@react-oauth/google';
 import { GoogleIdTokenPayload } from '../../models/GoogleIdTokenPayload';
@@ -17,25 +15,13 @@ interface CreatePostPageProps {
 }
 
 const CreatePostPage: React.FC<CreatePostPageProps> = ({
-  user,
-  authLoading,
-  onLoginSuccess,
-  onLoginError,
-  onLogout,
   onPostSubmit,
 }) => {
   return (
     <div className="create-post-page">
-      <SideBar />
+  
       <div className="main-content" style={{ marginLeft: '20px', padding: '20px' }}>
-        <Navbar
-          user={user}
-          authLoading={authLoading}
-          onLoginSuccess={onLoginSuccess}
-          onLoginError={onLoginError}
-          onLogout={onLogout}
-          onToggleCreatePostForm={() => {}}
-        />
+      
         <CreatePostForm onPostSubmit={onPostSubmit} />
       </div>
     </div>
