@@ -1,21 +1,28 @@
 import React, { useState } from "react";
 import "./PostComponent.css";
-import { Post as PostModel } from "../../models/Post";
+import { DisplayPost } from "../../models/Post";
 
 interface PostComponentProps {
-  post: PostModel;
+  post: DisplayPost;
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
-  const { username, profilePicPath: avatar, imagePath: image, description } = post;
-  const [likes, setLikes] = useState(0);
+  const { author, imagePath, description, likes: initialLikes = 0, createdAt } = post;
+  const username = author?.username || "Unknown User";
+  const profilePicPath = author?.profilePicPath;
+
+
+  const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
+
   const [comments, setComments] = useState<string[]>([]);
   const [comment, setComment] = useState("");
   const [showCommentsPopup, setShowCommentsPopup] = useState(false);
 
-  /* hardcoded timestamp will be changed */
-  const timestamp = "April 3, 2025 2:00 PM";
+  // Format the timestamp
+  const timestamp = createdAt
+      ? new Date(createdAt).toLocaleString() // Simple formatting
+      : 'Timestamp unavailable';
 
   const handleLike = () => {
     setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
@@ -36,22 +43,22 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
   return (
     <div className="post">
       <div className="post-header">
-        {avatar ? (
-          <img className="avatar" src={avatar} alt={`${username}'s avatar`} />
-        ) : (
-          <div className="avatar-placeholder">👤</div>
-        )}
-        <span className="username">{username}</span>
+        {profilePicPath ? (
+            <img className="avatar" src={profilePicPath} alt={`${username}'s avatar`} />
+          ) : (
+            <div className="avatar-placeholder">👤</div> // Placeholder if no pic
+          )}
+          <span className="username">{username}</span>
       </div>
 
-      {image ? (
-        <img className="post-image" src={image} alt={`Post by ${username}`} />
+      {imagePath ? (
+        <img className="post-image" src={imagePath} alt={`Post by ${username}`} />
       ) : (
         <div className="image-placeholder">📷 No Image</div>
       )}
 
       <div className="post-content">
-        <p className="post-description">{description}</p>
+        <p className="post-description">{description || ''}</p>
 
         {/* Like & Comment Bar */}
         <div className="post-actions">
@@ -98,7 +105,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
         {showCommentsPopup && (
           <div className="modal-overlay" onClick={() => setShowCommentsPopup(false)}>
             <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-              <img className="modal-full-image" src={image} alt={`Post by ${username}`} />
+              <img className="modal-full-image" src={imagePath} alt={`Post by ${username}`} />
 
               <div className="modal-comments-overlay">
                 <div className="modal-comments-scroll">
