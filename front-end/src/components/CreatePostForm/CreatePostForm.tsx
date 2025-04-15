@@ -44,28 +44,34 @@ export default function CreatePostForm({ onPostSubmit }: CreatePostFormProps) {
     <div className="create-post-form-container">
         <h2>Create a Post</h2>
         <form onSubmit={handleSubmit}>
-        <input
-            type="file"
-            name="imagePath"
-            accept="image/*"
-            onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                setFormData(prev => ({ ...prev, imagePath: file }));
-            }}
-            required
-        />
-        {formData.imagePath && (
-            <p style={{ fontStyle: 'italic', color: 'black' }}>
-                Selected file: {formData.imagePath.name}
-            </p>
-        )}
-        <textarea
-            name="description"
-            placeholder="Write an optional description of your photo..."
-            value={formData.description}
-            onChange={handleInputChange}
-        />
-        <button type="submit">Post</button>
+            <label htmlFor="file-input" className="custom-file-button">
+                Upload Image
+            </label>
+            <input
+                id="file-input"
+                className="file-input"
+                type="file"
+                name="imagePath"
+                accept="image/*"
+                onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setFormData(prev => ({ ...prev, imagePath: file }));
+                }}
+                required
+                style={{ display: 'none' }}
+            />
+            {formData.imagePath && (
+                <p style={{ fontStyle: 'italic', color: 'black' }}>
+                    Selected file: {formData.imagePath.name}
+                </p>
+            )}
+            <textarea
+                name="description"
+                placeholder="Write an optional description of your photo..."
+                value={formData.description}
+                onChange={handleInputChange}
+            />
+            <button type="submit">Post</button>
         </form>
     </div>
     );
