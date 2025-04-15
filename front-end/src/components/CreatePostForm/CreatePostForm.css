@@ -1,99 +1,87 @@
 /* src/components/CreatePostForm/CreatePostForm.css */
 
 .create-post-form-container {
-  max-width: 550px; /* Limit the width */
-  margin: 2rem auto; /* Center the form horizontally, add space above/below */
-  padding: 2rem; /* Add padding inside the container */
-  border: 1px solid #e0e0e0; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  background-color: #ffffff; /* White background */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-}
+    max-width: 550px; /* Limit the width */
+    margin: 2rem auto; /* Center the form horizontally, add space above/below */
+    padding: 2rem; /* Add padding inside the container */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  }
   
-.create-post-form-container h2 {
-  text-align: center; /* Center the title */
-  margin-bottom: 1.5rem; /* Space below the title */
-  color: #333; /* Darker text color */
-  font-weight: 600;
-}
-
-/* Style the form itself - use flexbox for easy spacing */
-.create-post-form-container form {
-  display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  gap: 1rem; /* Add space between all form elements */
-}
-
-/* Common styles for text inputs and textarea */
-.create-post-form-container input[type="text"],
-.create-post-form-container textarea {
-  padding: 12px 15px; /* Comfortable padding inside inputs */
-  border: 1px solid #ccc; /* Standard border */
-  border-radius: 4px; /* Slightly rounded corners for inputs */
-  font-size: 1rem; /* Standard font size */
-  width: 100%; /* Make inputs take full width of the form */
-  box-sizing: border-box; /* Important: includes padding/border in the element's width */
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for focus */
-}
-
-/* Specific style for textarea height */
-.create-post-form-container textarea {
-  min-height: 120px; /* Make textarea taller */
-  resize: vertical; /* Allow user to resize vertically */
-  font-family: inherit; /* Ensure textarea uses the same font as other inputs */
-}
-
-/* Style placeholders */
-.create-post-form-container input[type="text"]::placeholder,
-.create-post-form-container textarea::placeholder {
-  color: #999; /* Lighter color for placeholder text */
-}
-
-/* Style inputs/textarea on focus for better feedback */
-.create-post-form-container input[type="text"]:focus,
-.create-post-form-container textarea:focus {
-  outline: none; /* Remove default browser outline */
-  border-color: #007bff; /* Highlight border with a primary color */
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); /* Add a subtle glow effect */
-}
-
-/* Style the submit button */
-.create-post-form-container button[type="submit"] {
-  padding: 12px 20px; /* Generous padding */
-  background-color: #007bff; /* Primary button color */
-  color: white; /* White text */
-  border: none; /* Remove default border */
-  border-radius: 4px; /* Match input rounding */
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer; /* Indicate it's clickable */
-  transition: background-color 0.2s ease; /* Smooth background transition on hover */
-  margin-top: 0.5rem; /* Add a little extra space above the button */
-}
-
-/* Style button on hover */
-.create-post-form-container button[type="submit"]:hover {
-  background-color: #0056b3; /* Darker shade on hover */
-}
-
-.custom-file-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #333333;
-    color: white;
-    border: none;
-    border-radius: 4px;
+  .create-post-form-container h2 {
+    text-align: center; /* Center the title */
+    margin-bottom: 1.5rem; /* Space below the title */
+    color: #333; /* Darker text color */
+    font-weight: 600;
+  }
+  
+  /* Style the form itself - use flexbox for easy spacing */
+  .create-post-form-container form {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 1rem; /* Add space between all form elements */
+  }
+  
+  /* Common styles for text inputs and textarea */
+  .create-post-form-container input[type="text"],
+  .create-post-form-container textarea {
+    padding: 12px 15px; /* Comfortable padding inside inputs */
+    border: 1px solid #ccc; /* Standard border */
+    border-radius: 4px; /* Slightly rounded corners for inputs */
+    font-size: 1rem; /* Standard font size */
+    width: 100%; /* Make inputs take full width of the form */
+    box-sizing: border-box; /* Important: includes padding/border in the element's width */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for focus */
+  }
+  
+  /* Specific style for textarea height */
+  .create-post-form-container textarea {
+    min-height: 120px; /* Make textarea taller */
+    resize: vertical; /* Allow user to resize vertically */
+    font-family: inherit; /* Ensure textarea uses the same font as other inputs */
+  }
+  
+  /* Style placeholders */
+  .create-post-form-container input[type="text"]::placeholder,
+  .create-post-form-container textarea::placeholder {
+    color: #999; /* Lighter color for placeholder text */
+  }
+  
+  /* Style inputs/textarea on focus for better feedback */
+  .create-post-form-container input[type="text"]:focus,
+  .create-post-form-container textarea:focus {
+    outline: none; /* Remove default browser outline */
+    border-color: #007bff; /* Highlight border with a primary color */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); /* Add a subtle glow effect */
+  }
+  
+  /* Style the submit button */
+  .create-post-form-container button[type="submit"] {
+    padding: 12px 20px; /* Generous padding */
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Match input rounding */
     font-size: 1rem;
     font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.2s ease;
-}
-
-.custom-file-button:hover {
-    background-color: #1a1a1a;
-}
-
-.custom-file-button:active {
-    background-color: #003f7f;
-}
+    cursor: pointer; /* Indicate it's clickable */
+    transition: background-color 0.2s ease; /* Smooth background transition on hover */
+    margin-top: 0.5rem; /* Add a little extra space above the button */
+  }
+  
+  /* Style button on hover */
+  .create-post-form-container button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  /* Optional: Style for required fields (if you want visual cues) */
+  /* Add a red asterisk or similar - needs adjustment based on exact visual goal */
+  /*
+  .create-post-form-container input:required + label::after,
+  .create-post-form-container textarea:required + label::after {
+    content: " *";
+    color: red;
+  }
+  */
