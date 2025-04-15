@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./PostComponent.css";
-import { DisplayPost } from "../../models/Post";
+import { DisplayPost, AddCommentPayload } from "../../models/Post";
+import { addComment } from "../../api/comments";
 
 interface PostComponentProps {
   post: DisplayPost;
@@ -34,10 +35,27 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
   };
 
   const handleCommentSubmit = () => {
-    if (comment.trim()) {
-      setComments((prevComments) => [...prevComments, comment]);
+    try {
+      // create a new comment object
+      const newComment: AddCommentPayload = {
+        commentText: comment,
+        authorID: post.author._id, // Retrieving the author ID from the post object
+        postID: post._id, 
+      };
+
+      addComment(newComment); // Call the API to add the comment
+
+      setComments((prevComments) => [...prevComments, newComment.text]);
       setComment("");
     }
+    catch (error) {
+      console.error("Error creating post:", error);
+      alert("Failed to create post.");
+    }
+    // if (comment.trim()) {
+    //   setComments((prevComments) => [...prevComments, comment]);
+    //   setComment("");
+    // }
   };
 
   return (

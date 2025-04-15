@@ -6,6 +6,7 @@ const MONGO_HOST = process.env.MONGO_HOST;
 const MONGO_PORT = process.env.MONGO_PORT;
 export const USERS_COLLECTION = process.env.USERS_COLLECTION;
 export const POSTS_COLLECTION = process.env.POSTS_COLLECTION;
+export const COMMENTS_COLLECTION = process.env.COMMENTS_COLLECTION;
 
 if (!MONGO_DB || !MONGO_HOST || !MONGO_PORT) {
   console.error("Error: Missing required MongoDB environment variables (MONGO_DB, MONGO_HOST, MONGO_PORT)!");
@@ -28,7 +29,8 @@ if (isNaN(SERVER_PORT)) {
 export const API_BASE_PATHS = {
     AUTH: '/api/auth',
     USERS: `/api/${USERS_COLLECTION}`,
-    POSTS: `/api/${POSTS_COLLECTION}`
+    POSTS: `/api/${POSTS_COLLECTION}`,
+    COMMENTS: `/api/${COMMENTS_COLLECTION}`
 };
 
 // --- Minio Configuration ---

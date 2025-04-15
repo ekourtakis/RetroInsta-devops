@@ -16,7 +16,14 @@ export interface DisplayPost extends Omit<BackendPost, 'authorID'> {
 }
 
 export interface Comment {
-    id: number;
-    text: string;
-    author: string;
+    _id: number;
+    commentText: string;
+    authorID: string;
+    postID: string;
+}
+
+export interface AddCommentPayload {
+    authorID: string;
+    postID: string;
+    commentText: string;
 }
