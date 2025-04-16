@@ -49,6 +49,22 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
             <div className="avatar-placeholder">👤</div> // Placeholder if no pic
           )}
           <span className="username">{username}</span>
+
+          <button
+            onClick={() => console.log("Author:", author._id)}
+            style={{
+              marginLeft: "auto",
+              backgroundColor: "black",
+              color: "white",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "1rem",
+            }}
+          >
+            Follow
+          </button>
       </div>
 
       {imagePath ? (
