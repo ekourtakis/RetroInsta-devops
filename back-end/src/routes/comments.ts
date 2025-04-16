@@ -4,12 +4,15 @@ import Comment, { IComment } from '../models/Comment.js';
 
 const router: Router = express.Router();
 
-// GET /api/posts
+// GET /api/comments?postID={postID}
 router.get('/', async (req: Request, res: Response) => {
   try {
-    // const postID = req.query.postID;
-
-    const comments: IComment[] = await Comment.find({}).sort({ createdAt: -1 }); // Fetch newest first
+    const postID = req.query.postID as string;
+    if (!postID) {
+      return res.status(400).json({ error: "postID query parameter is required" });
+    }
+    console.log("Fetching comments for postID:", postID);
+    const comments: IComment[] = await Comment.find({postID: postID}).sort({ createdAt: -1 }); // Fetch newest first
     res.json(comments);
   } catch (error: any) {
     console.error("Error fetching comments:", error);
@@ -18,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 
-// TODO: add POST routes for adding comment to post **need to get postID from somewhere**
+// POST /api/comments
 router.post('/', async (req: Request, res: Response) => {
   try {
     // Extract comment data from the request body

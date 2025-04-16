@@ -235,7 +235,7 @@ function App() {
           <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
         )}
         <div className="Posts">
-          {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} />}
+          {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} appUser={appUser} />}
         </div>
       </div>
       </div>
