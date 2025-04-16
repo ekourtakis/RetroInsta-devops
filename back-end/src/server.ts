@@ -13,6 +13,7 @@ import { initializeData } from './database/seed.js'; // Correct path
 import authRouter from './routes/auth.js';
 import postsRouter from './routes/posts.js';
 import usersRouter from './routes/users.js';
+import commentsRouter from './routes/comments.js';
 import uploadRouter from './routes/upload.js';
 
 const app: Express = express();
@@ -32,6 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(API_BASE_PATHS.AUTH, authRouter);
 app.use(API_BASE_PATHS.POSTS, postsRouter);
 app.use(API_BASE_PATHS.USERS, usersRouter);
+app.use(API_BASE_PATHS.COMMENTS, commentsRouter);
 app.use('/', uploadRouter);
 
 // --- Not Found Handler ---

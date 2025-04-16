@@ -1,23 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./PostComponent.css";
-import { DisplayPost } from "../../models/Post";
+import { DisplayPost, AddCommentPayload, Comment } from "../../models/Post";
+import { addComment, getCommentsByPostId } from "../../api/comments";
+import { getUserById } from "../../api/users";
+import { User } from "../../models/User";
 
 interface PostComponentProps {
   post: DisplayPost;
+  appUser: User | null;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   const { author, imagePath, description, likes: initialLikes = 0, createdAt } = post;
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
-
+  const currentUser = appUser;
 
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
 
-  const [comments, setComments] = useState<string[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentUsernames, setCommentUsernames] = useState<{ [commentId: string]: string }>({});
   const [comment, setComment] = useState("");
   const [showCommentsPopup, setShowCommentsPopup] = useState(false);
+
+  const usernameCache = useRef<{ [userId: string]: string }>({});
 
   // Format the timestamp
   const timestamp = createdAt
@@ -33,12 +40,59 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
     setComment(e.target.value);
   };
 
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
-      setComments((prevComments) => [...prevComments, comment]);
-      setComment("");
+  const handleCommentSubmit = async () => {
+    try {
+      const payload: AddCommentPayload = {
+        commentText: comment,
+        authorID: currentUser._id,
+        postID: post._id,
+      };
+  
+      await addComment(payload); // Make sure to await this
+      setComment(""); // Clear the input
+      await fetchCommentsAndUsernames(); // Re-fetch comments and usernames
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      alert("Failed to create comment.");
+    }
+  };  
+
+  const getUsername = async (authorID: string) => {
+    if (usernameCache.current[authorID]) {
+      return usernameCache.current[authorID];
+    }
+  
+    try {
+      const user = await getUserById(authorID);
+      const username = user.username || "Unknown User";
+      usernameCache.current[authorID] = username;
+      return username;
+    } catch (err) {
+      console.error("Failed to fetch username:", err);
+      return "Unknown User";
     }
   };
+
+  const fetchCommentsAndUsernames = async () => {
+    try {
+      const fetchedComments = await getCommentsByPostId(post._id);
+      setComments(fetchedComments);
+  
+      const newUsernames: { [commentId: string]: string } = {};
+      for (const c of fetchedComments) {
+        const username = await getUsername(c.authorID);
+        newUsernames[c._id] = username;
+      }
+      setCommentUsernames(newUsernames);
+    } catch (error) {
+      console.error("Error loading comments or usernames:", error);
+    }
+  };  
+  
+  // Fetch comments and usernames when the component mounts or when post._id changes
+  useEffect(() => {
+    fetchCommentsAndUsernames();
+  }, [post._id]);  
 
   return (
     <div className="post">
@@ -110,16 +164,19 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
               <div className="modal-comments-overlay">
                 <div className="modal-comments-scroll">
                   <h3>Comments</h3>
-                  {comments.length === 0 ? (
+                    {comments.length === 0 ? (
                     <p>No comments yet.</p>
-                  ) : (
-                    comments.map((comment, index) => (
+                    ) : (
+                    comments.map((comment, index) => {
+                      const username = commentUsernames[comment._id] || "Loading...";
+                      return (
                       <div key={index} className="comment">
-                        <span className="comment-author">User {index + 1}:</span>
-                        <span className="comment-text">{comment}</span>
+                        <span className="comment-author">{username}: </span>
+                        <span className="comment-text">{comment.commentText}</span>
                       </div>
-                    ))
-                  )}
+                      );
+                    })
+                    )}
                 </div>
                 <div className="modal-comment-input-row">
                   <input
