@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar/Navbar";
 import PostFeed from "./components/PostFeed/PostFeed";
 import CreatePostForm from "./components/CreatePostForm/CreatePostForm";
 import SideBar from "./components/SideBar/SideBar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DisplayPost, BackendPost } from "./models/Post"
 import { CreatePostPayload, PostFormData } from './models/CreatePostData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -27,6 +27,8 @@ function App() {
   const [authLoading, setAuthLoading] = useState(false)
   const [isCreatePostFormVisible, setIsCreatePostFormVisible] = useState(false);
 
+  const userCache = useRef<Record<string, User>>({});
+
   const fetchAndProcessPosts = useCallback(async () => {
     console.log("Fetching posts...");
     setPostsLoading(true);
@@ -38,62 +40,91 @@ function App() {
       if (backendPosts.length === 0) {
         console.log("No posts found.");
         setPosts([]);
+        setPostsLoading(false); // Ensure loading state is turned off
         return;
       }
 
-      const authorIDs = [
+      // --- User Fetching with Cache ---
+      const uniqueAuthorIDs = [
         ...new Set(backendPosts
           .map(post => post.authorID)
-          .filter(id => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)) // Pre-filter valid IDs
+          .filter((id): id is string => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id))
         )
       ];
 
-      if (authorIDs.length === 0) {
-        console.warn("No valid author IDs found.");
+      if (uniqueAuthorIDs.length === 0) {
+        console.warn("No valid author IDs found in posts.");
         setPosts([]);
+        setPostsLoading(false); // Ensure loading state is turned off
         return;
       }
 
-      // fetch all users concurently 
-      const userPromises = authorIDs.map(id =>
-        getUserById(id).catch(error => {
-          // Handle individual user fetch errors gracefully
-          console.warn(`Failed to fetch user ${id}:`, error.message);
-          return null; // Return null if a user fetch fails
-        })
-      );
+      // Check cache: Separate IDs that need fetching from those already cached
+      const idsToFetch: string[] = [];
+      const usersFromCache: Record<string, User> = {};
 
-      const usersOrNulls = await Promise.all(userPromises);
-
-      const usersMap: Record<string, User> = {};
-      usersOrNulls.forEach(user => {
-        if (user) {
-          usersMap[user._id] = user;
+      uniqueAuthorIDs.forEach(id => {
+        if (userCache.current[id]) {
+          usersFromCache[id] = userCache.current[id];
+        } else {
+          idsToFetch.push(id);
         }
       });
-      console.log(`Successfully fetched ${Object.keys(usersMap).length} users.`);
-      
+
+      console.log(`Found ${Object.keys(usersFromCache).length} users in cache.`);
+      console.log(`Need to fetch ${idsToFetch.length} users.`);
+
+      let fetchedUsers: Record<string, User> = {};
+      if (idsToFetch.length > 0) {
+        const userPromises = idsToFetch.map(id =>
+          getUserById(id).catch(error => {
+            console.warn(`Failed to fetch user ${id}:`, error.message);
+            return null; // Return null if a user fetch fails
+          })
+        );
+
+        const usersOrNulls = await Promise.all(userPromises);
+
+        // Add successfully fetched users to the fetchedUsers map and update the cache
+        usersOrNulls.forEach(user => {
+          if (user) {
+            fetchedUsers[user._id] = user;
+            userCache.current[user._id] = user; // Update the cache
+          }
+        });
+        console.log(`Successfully fetched ${Object.keys(fetchedUsers).length} new users.`);
+      }
+
+      // Combine cached users and newly fetched users
+      const allUsersMap: Record<string, User> = { ...usersFromCache, ...fetchedUsers };
+      // --- End User Fetching with Cache ---
+
+
+      // --- Process Posts ---
       const processedPosts: DisplayPost[] = backendPosts
         .map(post => {
-          const author = usersMap[post.authorID];
+          const author = allUsersMap[post.authorID]; // Use the combined map
           if (!author) {
-            return null; // skip this post if author not found
+            // This should happen less often now, only if getUserById failed and wasn't cached
+            console.warn(`Author ${post.authorID} not found for post ${post._id}. Skipping post.`);
+            return null;
           }
           const { authorID, ...restOfPost } = post;
           return { ...restOfPost, author };
         })
-        .filter((p): p is DisplayPost => p !== null); // filter out nulls
+        .filter((p): p is DisplayPost => p !== null);
 
       console.log(`Processed ${processedPosts.length} posts to display.`);
+      setPosts(processedPosts);
+      // --- End Process Posts ---
 
-      setPosts(processedPosts);      
     } catch (error) {
-      console.error("Error fetching posts:", error);
-      setPosts([]);
+      console.error("Error fetching or processing posts:", error);
+      setPosts([]); // Clear posts on error
     } finally {
       setPostsLoading(false);
     }
-  },[]);
+  }, []); 
   
   // login state
   const handleLogout = useCallback(() => {
