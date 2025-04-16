@@ -42,22 +42,20 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
 
   const handleCommentSubmit = async () => {
     try {
-      // create a new comment object
       const payload: AddCommentPayload = {
         commentText: comment,
-        authorID: currentUser._id, // TODO: set this to the logged-in user's ID!!
-        postID: post._id, 
+        authorID: currentUser._id,
+        postID: post._id,
       };
-
-      addComment(payload); // Call the API to add the comment
-      setComments(await getCommentsByPostId(post._id));
-      setComment("");
+  
+      await addComment(payload); // Make sure to await this
+      setComment(""); // Clear the input
+      await fetchCommentsAndUsernames(); // Re-fetch comments and usernames
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      alert("Failed to create comment.");
     }
-    catch (error) {
-      console.error("Error creating post:", error);
-      alert("Failed to create post.");
-    }
-  };
+  };  
 
   const getUsername = async (authorID: string) => {
     if (usernameCache.current[authorID]) {
@@ -74,27 +72,27 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
       return "Unknown User";
     }
   };
+
+  const fetchCommentsAndUsernames = async () => {
+    try {
+      const fetchedComments = await getCommentsByPostId(post._id);
+      setComments(fetchedComments);
+  
+      const newUsernames: { [commentId: string]: string } = {};
+      for (const c of fetchedComments) {
+        const username = await getUsername(c.authorID);
+        newUsernames[c._id] = username;
+      }
+      setCommentUsernames(newUsernames);
+    } catch (error) {
+      console.error("Error loading comments or usernames:", error);
+    }
+  };  
   
   // Fetch comments and usernames when the component mounts or when post._id changes
   useEffect(() => {
-    const fetchCommentsAndUsernames = async () => {
-      try {
-        const fetchedComments = await getCommentsByPostId(post._id);
-        setComments(fetchedComments);
-
-        const newUsernames: { [commentId: string]: string } = {};
-        for (const c of fetchedComments) {
-          const username = await getUsername(c.authorID);
-          newUsernames[c._id] = username;
-        }
-        setCommentUsernames(newUsernames);
-      } catch (error) {
-        console.error("Error loading comments or usernames:", error);
-      }
-    };
-
     fetchCommentsAndUsernames();
-  }, [post._id]);
+  }, [post._id]);  
 
   return (
     <div className="post">
