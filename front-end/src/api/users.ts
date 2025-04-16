@@ -10,7 +10,7 @@ export const getUserById = async (userId: string): Promise<User> => {
   if (!userId) throw new Error("User ID is required to fetch user data.");
 
   const targetUrl = `${BACKEND_URL}/api/users/${userId}`;
-  console.log(`[API] Fetching user data from: ${targetUrl}`);
+//   console.log(`[API] Fetching user data from: ${targetUrl}`);
 
   try {
       const response = await fetch(targetUrl);
@@ -29,7 +29,7 @@ export const getUserById = async (userId: string): Promise<User> => {
           throw new Error("Received invalid user data structure from backend.");
       }
 
-      console.log("[API] User data fetched successfully:", responseData);
+    //   console.log("[API] User data fetched successfully:", responseData);
       return responseData as User;
 
   } catch (error) {
