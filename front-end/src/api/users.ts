@@ -38,3 +38,32 @@ export const getUserById = async (userId: string): Promise<User> => {
       throw new Error("An unknown error occurred while fetching user data.");
   }
 };
+
+/**
+ * Triggers follow logic from current user to another user.
+ * @param currentUserId - the ID of the user who is following
+ * @param userIdToFollow - the ID of the user being followed
+ */
+ export const followUser = async (currentUserId: string, userIdToFollow: string): Promise<void> => {
+    const targetUrl = `${BACKEND_URL}/api/users/${currentUserId}/follow`;
+
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userIdToFollow }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to follow user.');
+      }
+
+      console.log(`[API] User ${currentUserId} followed ${userIdToFollow}`);
+    } catch (err) {
+      console.error('[API] Error in followUser():', err);
+      throw err;
+    }
+};
