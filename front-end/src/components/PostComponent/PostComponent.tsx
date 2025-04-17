@@ -3,6 +3,7 @@ import "./PostComponent.css";
 import { DisplayPost, AddCommentPayload, Comment } from "../../models/Post";
 import { addComment, getCommentsByPostId } from "../../api/comments";
 import { getUserById } from "../../api/users";
+import { followUser } from '../../api/users';
 import { User } from "../../models/User";
 
 interface PostComponentProps {
@@ -15,6 +16,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
   const currentUser = appUser;
+  const currentUserId = appUser?._id || "notLoggedIn";
 
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
@@ -88,6 +90,16 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
       console.error("Error loading comments or usernames:", error);
     }
   };  
+
+  const handleFollowClick = async () => {
+    console.log("currentUserId:", currentUserId);
+    try {
+      await followUser(currentUserId, author._id);
+      console.log(`Followed ${author._id}`);
+    } catch (error) {
+      console.error("Follow action failed:", error);
+    }
+  };
   
   // Fetch comments and usernames when the component mounts or when post._id changes
   useEffect(() => {
@@ -103,6 +115,21 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
             <div className="avatar-placeholder">👤</div> // Placeholder if no pic
           )}
           <span className="username">{username}</span>
+          <button
+            onClick={handleFollowClick}
+            style={{
+              marginLeft: "auto",
+              backgroundColor: "black",
+              color: "white",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "1rem",
+            }}
+          >
+            Follow
+          </button>
       </div>
 
       {imagePath ? (
