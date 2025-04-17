@@ -29,6 +29,7 @@ const seedPostViaRoute = async (
     imageFilename: string,
     authorId: string,
     authorUsername: string,
+    likes: number,
     postIndex: number
 ): Promise<void> => {
     const imageFilePath = path.join(SEED_IMAGES_DIR, imageFilename);
@@ -47,6 +48,7 @@ const seedPostViaRoute = async (
         const formData = new FormData();
         formData.append('authorID', authorId);
         formData.append('description', description);
+        formData.append('likes', likes);
         formData.append('imagePath', fileBuffer, {
             filename: imageFilename,
             contentType: fileType
@@ -209,6 +211,7 @@ export const initializeData = async (): Promise<void> => {
                         randomImageFile,
                         randomUser._id.toString(),
                         randomUser.username || `User_${i}`,
+                        Math.floor(Math.random() * 101),
                         i
                     );
                     postCreationPromises.push(promise);

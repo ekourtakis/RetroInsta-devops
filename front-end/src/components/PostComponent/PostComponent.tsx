@@ -11,7 +11,7 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
-  const { author, imagePath, description, likes: initialLikes = 0, createdAt } = post;
+  const { author, imagePath, description, likes: initialLikes, createdAt } = post;
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
   const currentUser = appUser;
@@ -44,7 +44,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
     try {
       const payload: AddCommentPayload = {
         commentText: comment,
-        authorID: currentUser._id,
+        authorID: currentUser!!._id,
         postID: post._id,
       };
   
