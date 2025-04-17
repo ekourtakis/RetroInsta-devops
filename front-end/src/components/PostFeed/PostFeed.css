@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 10px;
   max-width: 500px;
-  margin: auto; /* <--- Restored simple auto margin */
+  margin: auto;
 }
 
 .header {
