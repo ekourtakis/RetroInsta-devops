@@ -4,6 +4,7 @@ import { DisplayPost, AddCommentPayload, Comment } from "../../models/Post";
 import { addComment, getCommentsByPostId } from "../../api/comments";
 import { getUserById } from "../../api/users";
 import { User } from "../../models/User";
+import CommentSection from "../CommentSection/CommentSection";
 
 interface PostComponentProps {
   post: DisplayPost;
@@ -19,13 +20,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache 
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
 
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [commentUsernames, setCommentUsernames] = useState<{ [commentId: string]: string }>({});
-  const [comment, setComment] = useState("");
-  const [showCommentsPopup, setShowCommentsPopup] = useState(false);
-
-  // const usernameCache = useRef<{ [userId: string]: string }>({});
-
   // Format the timestamp
   const timestamp = createdAt
       ? new Date(createdAt).toLocaleString() // Simple formatting
@@ -35,63 +29,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache 
     setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
     setIsLiked(!isLiked);
   };
-
-  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
-  };
-
-  const handleCommentSubmit = async () => {
-    try {
-      const payload: AddCommentPayload = {
-        commentText: comment,
-        authorID: currentUser._id,
-        postID: post._id,
-      };
-  
-      await addComment(payload); // Make sure to await this
-      setComment(""); // Clear the input
-      await fetchCommentsAndUsernames(); // Re-fetch comments and usernames
-    } catch (error) {
-      console.error("Error creating comment:", error);
-      alert("Failed to create comment.");
-    }
-  };  
-
-  const getUsername = async (authorID: string) => {
-    if (userCache.current[authorID]?.username) {
-      return userCache.current[authorID].username;
-    }
-  
-    try {
-      const newUser = await getUserById(authorID);
-      userCache.current[authorID] = newUser;
-      return newUser.username;
-    } catch (err) {
-      console.error("Failed to fetch username:", err);
-      return "Unknown User";
-    }
-  };
-
-  const fetchCommentsAndUsernames = async () => {
-    try {
-      const fetchedComments = await getCommentsByPostId(post._id);
-      setComments(fetchedComments);
-  
-      const newUsernames: { [commentId: string]: string } = {};
-      for (const c of fetchedComments) {
-        const username = await getUsername(c.authorID);
-        newUsernames[c._id] = username;
-      }
-      setCommentUsernames(newUsernames);
-    } catch (error) {
-      console.error("Error loading comments or usernames:", error);
-    }
-  };  
-  
-  // Fetch comments and usernames when the component mounts or when post._id changes
-  useEffect(() => {
-    fetchCommentsAndUsernames();
-  }, [post._id]);  
 
   return (
     <div className="post">
@@ -127,80 +64,13 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache 
           </div>
 
           {/* Comment section */}
-          <div className="comment-section">
-            <span
-              className="comment-icon"
-              role="button"
-              aria-label="Comment on post"
-              onClick={() => setShowCommentsPopup(true)}
-            >
-              💬
-            </span>
-            <span className="comment-count">{comments.length}</span>
-            <input
-              type="text"
-              className="comment-input"
-              placeholder="Write a comment..."
-              value={comment}
-              onChange={handleCommentChange}
-            />
-            <button
-              className="comment-submit"
-              onClick={handleCommentSubmit}
-              aria-label="Submit comment"
-              disabled={!comment.trim()}
-            >
-              Post
-            </button>
-          </div>
+          <CommentSection
+            postID={post._id}
+            currentUser={currentUser}
+            userCache={userCache}
+            imagePath={imagePath}
+          />
         </div>
-
-        {showCommentsPopup && (
-          <div className="modal-overlay" onClick={() => setShowCommentsPopup(false)}>
-            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-              <img className="modal-full-image" src={imagePath} alt={`Post by ${username}`} />
-
-              <div className="modal-comments-overlay">
-                <div className="modal-comments-scroll">
-                  <h3>Comments</h3>
-                    {comments.length === 0 ? (
-                    <p>No comments yet.</p>
-                    ) : (
-                    comments.map((comment, index) => {
-                      const username = commentUsernames[comment._id] || "Loading...";
-                      return (
-                      <div key={index} className="comment">
-                        <span className="comment-author">{username}: </span>
-                        <span className="comment-text">{comment.commentText}</span>
-                      </div>
-                      );
-                    })
-                    )}
-                </div>
-                <div className="modal-comment-input-row">
-                  <input
-                    type="text"
-                    className="comment-input"
-                    placeholder="Write a comment..."
-                    value={comment}
-                    onChange={handleCommentChange}
-                  />
-                  <button
-                    className="comment-submit"
-                    onClick={handleCommentSubmit}
-                    aria-label="Submit comment"
-                    disabled={!comment.trim()}
-                  >
-                    Post
-                  </button>
-                </div>
-                <button className="close-button" onClick={() => setShowCommentsPopup(false)}>
-                  ✕
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
         <div className="timestamp">{timestamp}</div>
       </div>
     </div>
