@@ -5,6 +5,7 @@ import { addComment, getCommentsByPostId } from "../../api/comments";
 import { getUserById } from "../../api/users";
 import { followUser } from '../../api/users';
 import { User } from "../../models/User";
+import { toggleLikePost } from "../../api/posts";
 
 interface PostComponentProps {
   post: DisplayPost;
@@ -33,9 +34,21 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
       ? new Date(createdAt).toLocaleString() // Simple formatting
       : 'Timestamp unavailable';
 
-  const handleLike = () => {
-    setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
-    setIsLiked(!isLiked);
+  const handleLike = async () => {
+    if (!currentUser) {
+      alert("You must be logged in to like a post, stupid.");
+      return;
+    }
+
+    try {
+      await toggleLikePost(post._id, currentUser._id);
+      setLikes((prevLikes) => (isLiked ? prevLikes - 1 : prevLikes + 1));
+      setIsLiked(!isLiked);
+      console.log("User liked/unliked post.");
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      alert("Failed to like/unlike post");
+    }
   };
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {

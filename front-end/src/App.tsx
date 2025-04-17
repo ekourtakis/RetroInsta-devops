@@ -270,7 +270,10 @@ function App() {
               <p>Loading posts...</p>
             ) : (
               posts.length > 0 ? (
-                <PostFeed posts={posts} appUser={appUser} />
+                <PostFeed 
+                  posts={posts} 
+                  appUser={appUser} 
+                />
               ) : (
                 <p>No posts available. Be the first to create one!</p>
               )

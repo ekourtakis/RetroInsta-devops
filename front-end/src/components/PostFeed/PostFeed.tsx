@@ -13,7 +13,11 @@ const Feed: React.FC<PostFeedProps> = ({ posts, appUser }) => {
   return (
     <div className="feed">
       {posts.map((post) => (
-        <PostComponent key={post._id} post={post} appUser={appUser} />
+        <PostComponent 
+          key={post._id} 
+          post={post} 
+          appUser={appUser} 
+        />
       ))}
     </div>
   );
