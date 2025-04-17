@@ -13,7 +13,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   const { author, imagePath, description, likes: initialLikes = 0, createdAt } = post;
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
-  const curUser = appUser._id;
+  const curUser = appUser ? appUser._id : "notLoggedIn";
 
 
 
