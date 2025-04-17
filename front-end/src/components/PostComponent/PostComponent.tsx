@@ -20,7 +20,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   const currentUserId = appUser?._id || "notLoggedIn";
 
   const [likes, setLikes] = useState(initialLikes);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(
+    currentUser?.likedPostIDs.includes(post._id) // initally set to whether user has liked post before
+  );
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentUsernames, setCommentUsernames] = useState<{ [commentId: string]: string }>({});
