@@ -1,0 +1,47 @@
+.following-sidebar {
+    position: absolute;
+    top: 110px;
+    right: 40px;
+    width: 240px;
+    padding: 1rem;
+    background-color: white;
+    color: black;
+    height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .following-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .following-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .following-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.75rem;
+  }
+  
+  .avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+  }
+  
+  .following-username {
+    font-weight: 500;
+  }
+  

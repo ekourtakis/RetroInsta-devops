@@ -12,6 +12,8 @@ import { User } from './models/User';
 import { createPost, getAllPosts } from './api/posts';
 import { loginWithGoogleApi as loginWithGoogle } from './api/auth';
 import { getUserById, getUserById as getUserDataById } from './api/users';
+import FollowingSidebar from "./components/FollowingSidebar/FollowingSidebar";
+
 
 const LOCAL_STORAGE_USER_ID_KEY = 'user_id'
 
@@ -250,28 +252,47 @@ function App() {
   
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <div className="App">
-      <SideBar />
-        {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
-        <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
-        <Navbar 
-          user={appUser}
-          authLoading={authLoading}
-          onLoginSuccess={handleLoginSuccess}
-          onLoginError={handleLoginError}
-          onLogout={handleLogout}
-          onToggleCreatePostForm={toggleCreatePostForm}
-          />
-        {isCreatePostFormVisible && (
-          <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
-        )}
-        <div className="Posts">
-          {postsLoading ? <p>Loading posts...</p> : <PostFeed posts={posts} appUser={appUser} />}
+      <div className="App" style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+        
+        {/* Left Sidebar */}
+        <div style={{ width: "180px", flexShrink: 0 }}>
+          <SideBar />
         </div>
-      </div>
+  
+        {/* Main Content */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
+          <Navbar
+            user={appUser}
+            authLoading={authLoading}
+            onLoginSuccess={handleLoginSuccess}
+            onLoginError={handleLoginError}
+            onLogout={handleLogout}
+            onToggleCreatePostForm={toggleCreatePostForm}
+          />
+  
+          {isCreatePostFormVisible && (
+            <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
+          )}
+  
+          <div className="Posts">
+            {postsLoading ? (
+              <p>Loading posts...</p>
+            ) : (
+              <PostFeed posts={posts} appUser={appUser} />
+            )}
+          </div>
+        </div>
+  
+        {appUser && (
+          <div
+          >
+            <FollowingSidebar followingUserIDs={appUser.followingUserIDs || []} />
+          </div>
+        )}
       </div>
     </GoogleOAuthProvider>
   );
+  
 }
 
 export default App;
