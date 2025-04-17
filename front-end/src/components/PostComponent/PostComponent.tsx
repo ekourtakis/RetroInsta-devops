@@ -32,6 +32,16 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache 
     setIsLiked(!isLiked);
   };
 
+  const handleFollowClick = async () => {
+    console.log("currentUserId:", currentUserId);
+    try {
+      await followUser(currentUserId, author._id);
+      console.log(`Followed ${author._id}`);
+    } catch (error) {
+      console.error("Follow action failed:", error);
+    }
+  };
+
   return (
     <div className="post">
       <div className="post-header">
