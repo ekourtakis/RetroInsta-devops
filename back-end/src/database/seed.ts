@@ -1,4 +1,3 @@
-// src/database/seed.ts
 import mongoose from 'mongoose';
 import fs from 'fs/promises';
 import path from 'path';
@@ -6,16 +5,14 @@ import { fileURLToPath } from 'url';
 import axios from 'axios';
 import FormData from 'form-data';
 
-// Configuration - Adjust path as needed
 import {
     POSTS_COLLECTION,
     USERS_COLLECTION,
     SERVER_HOST,
     SERVER_PORT,
-    API_BASE_PATHS // <--- ADD THIS IMPORT
+    API_BASE_PATHS
 } from '../config/config.js';
 
-// Models - Adjust paths as needed
 import Post, { IPost } from '../models/Post.js';
 import User, { IUser } from '../models/User.js';
 
@@ -33,14 +30,12 @@ const seedPostViaRoute = async (
     postIndex: number
 ): Promise<void> => {
     const imageFilePath = path.join(SEED_IMAGES_DIR, imageFilename);
-    // Now API_BASE_PATHS.POSTS will be found
     const targetUrl = `http://${SERVER_HOST}:${SERVER_PORT}${API_BASE_PATHS.POSTS}`;
     const description = `Post #${postIndex + 1} by ${authorUsername}.`;
 
     console.log(`[Seed Post Route] Processing: Author ${authorId}, Image ${imageFilename} -> POST ${targetUrl}`);
 
     try {
-        // ... (rest of the function remains the same) ...
         await fs.access(imageFilePath);
         const fileBuffer = await fs.readFile(imageFilePath);
         const fileType = path.extname(imageFilename).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg';
@@ -82,9 +77,8 @@ const seedPostViaRoute = async (
     }
 };
 
-// --- Helper Function to Upload User Profile Image (Still needed for users) ---
+// --- Helper Function to Upload User Profile Image ---
 const uploadUserProfileImageViaRoute = async (filename: string): Promise<string> => {
-    // ... (this function remains the same) ...
     const filePath = path.join(SEED_IMAGES_DIR, filename);
     const targetUrl = `http://${SERVER_HOST}:${SERVER_PORT}/upload-with-presigned-url`;
     // console.log(`[Seed User Image Upload] Processing image: ${filename} -> PUT ${targetUrl}`);
@@ -120,10 +114,8 @@ const uploadUserProfileImageViaRoute = async (filename: string): Promise<string>
 
 // --- Main Seeding Function ---
 export const initializeData = async (): Promise<void> => {
-    // ... (rest of initializeData remains the same) ...
     console.log("--- Starting Data Seeding Process ---");
     try {
-        // --- Check Seed Image Directory ---
         try {
             await fs.access(SEED_IMAGES_DIR);
             console.log(`[Seed] Found seed image directory: ${SEED_IMAGES_DIR}`);
