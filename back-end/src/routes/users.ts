@@ -114,5 +114,31 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// PATCH /api/users/:id/follow
+router.patch('/:id/follow', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { userIdToFollow } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(userIdToFollow)) {
+    return res.status(400).json({ error: "Invalid user ID format" });
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $addToSet: { followingUserIDs: userIdToFollow } }, // avoids duplicates
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error adding user to following list:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 export default router;
