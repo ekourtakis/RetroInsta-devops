@@ -14,7 +14,7 @@ import { loginWithGoogleApi } from './api/auth';
 import { getUserDataByIdApi as getUserDataById } from './api/users';
 import { Routes, Route } from 'react-router-dom';
 import ProfilePage from './components/ProfilePage/ProfilePage';
-import AddPost from './components/AddPost/AddPost';
+import AddPost from './components/AddPost/AddPostPopup';
 
 
 const backendUrl = "http://localhost:7005" // TODO: move to env variable
@@ -143,7 +143,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
-      <SideBar />
+      <SideBar onPostSubmit={handleCreatePostSubmit} />
         {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
         <div className="main-content" style={{ marginLeft: '250px', padding: '10px' }}>
         <Navbar 
@@ -185,11 +185,8 @@ function App() {
          element={
           appUser ? (
     <AddPost 
-      user={appUser}
-      authLoading={authLoading}
-      onLoginSuccess={handleLoginSuccess}
-      onLoginError={handleLoginError}
-      onLogout={handleLogout}
+      isOpen={true}
+      onClose={() => {}}
       onPostSubmit={handleCreatePostSubmit}
     />
   ) : (
