@@ -10,7 +10,7 @@ interface PostComponentProps {
   appUser: User | null;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache }) => {
   const { author, imagePath, description, likes: initialLikes = 0, createdAt } = post;
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
@@ -24,7 +24,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   const [comment, setComment] = useState("");
   const [showCommentsPopup, setShowCommentsPopup] = useState(false);
 
-  const usernameCache = useRef<{ [userId: string]: string }>({});
+  // const usernameCache = useRef<{ [userId: string]: string }>({});
 
   // Format the timestamp
   const timestamp = createdAt
@@ -58,15 +58,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
   };  
 
   const getUsername = async (authorID: string) => {
-    if (usernameCache.current[authorID]) {
-      return usernameCache.current[authorID];
+    if (userCache.current[authorID]?.username) {
+      return userCache.current[authorID].username;
     }
   
     try {
-      const user = await getUserById(authorID);
-      const username = user.username || "Unknown User";
-      usernameCache.current[authorID] = username;
-      return username;
+      const newUser = await getUserById(authorID);
+      userCache.current[authorID] = newUser;
+      return newUser.username;
     } catch (err) {
       console.error("Failed to fetch username:", err);
       return "Unknown User";
