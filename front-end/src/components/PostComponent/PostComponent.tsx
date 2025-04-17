@@ -164,7 +164,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
               onClick={handleLike}
               aria-label="Like post"
             >
-              ❤️
+              {isLiked ? "❤️" : "🤍"}
             </button>
             <span className="like-count">{likes}</span>
           </div>
