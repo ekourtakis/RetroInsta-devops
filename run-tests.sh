@@ -3,6 +3,10 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+echo "--- Building Docker Image ---"
+
+docker compose -f docker-compose.test.yaml build backend-test
+
 echo "--- Running Backend Integration Tests ---"
 
 # Define Compose file path relative to script location
