@@ -26,7 +26,11 @@ const CommentModal: React.FC<CommentModalProps> = ({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <img className="post-image" src={imagePath} alt={`Post by ${username}`} />
+        
+        {/* ⬇️ Image container added for spacing */}
+        <div className="modal-image-container">
+          <img className="modal-full-image" src={imagePath} alt={`Post by ${username}`} />
+        </div>
 
         <div className="modal-comments-overlay">
           <div className="modal-comments-scroll">
@@ -62,9 +66,6 @@ const CommentModal: React.FC<CommentModalProps> = ({
               Post
             </button>
           </div>
-          <button className="close-button" onClick={onClose}>
-            ✕
-          </button>
         </div>
       </div>
     </div>
