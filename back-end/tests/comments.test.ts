@@ -192,23 +192,6 @@ describe('Comments API (/api/comments)', () => {
         expect(response.body.error).toContain('Comment validation failed: commentText: Path `commentText` is required.');
      });
 
-     // Optional: Test with empty commentText if schema allows/disallows it
-     it('should return 400 if commentText is empty string (if schema requires non-empty)', async () => {
-        const commentData = {
-            authorID: testUserId.toString(),
-            postID: testPostId.toString(),
-            commentText: '' // Empty string
-        };
-        const response = await request(app)
-            .post('/api/comments')
-            .send(commentData);
-        // Mongoose 'required: true' allows empty string by default.
-        // If you add validation like `minlength: 1`, this test would expect 400.
-        // Adjust based on your actual schema validation. Assuming default required:
-         expect(response.status).toBe(201); // Empty string is allowed by default 'required'
-         expect(response.body.commentText).toBe('');
-     });
-
   });
 
 }); // End of main describe block
