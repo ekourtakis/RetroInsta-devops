@@ -272,7 +272,8 @@ function App() {
               posts.length > 0 ? (
                 <PostFeed 
                   posts={posts} 
-                  appUser={appUser} 
+                  appUser={appUser},
+                  userCache={userCache} 
                 />
               ) : (
                 <p>No posts available. Be the first to create one!</p>
