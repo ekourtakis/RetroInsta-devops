@@ -7,7 +7,11 @@ import { getAllPosts } from '../api/posts';
 import PostFeed from '../components/PostFeed/PostFeed';
 import './Profile.css';
 
-const Profile: React.FC = () => {
+interface ProfileProps {
+  userCache: Record<string, User>;
+}
+
+const Profile: React.FC<ProfileProps> = ({ userCache }) => {
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<DisplayPost[]>([]);
@@ -93,7 +97,7 @@ const Profile: React.FC = () => {
       <div className="profile-posts">
         <h2>Posts</h2>
         {posts.length > 0 ? (
-          <PostFeed posts={posts} appUser={user} />
+          <PostFeed posts={posts} appUser={user} userCache={userCache} />
         ) : (
           <p className="no-posts">No posts yet</p>
         )}

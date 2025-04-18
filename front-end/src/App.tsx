@@ -281,7 +281,7 @@ function App() {
             />}
         </div>
          } />
-              <Route path="/profile/:userId" element={<Profile />} />
+              <Route path="/profile/:userId" element={<Profile userCache={userCache} />} />
         </Routes>
       </div>
       <CreatePostPopup 
