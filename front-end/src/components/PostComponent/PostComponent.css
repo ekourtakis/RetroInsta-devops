@@ -40,26 +40,25 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 0;
+  padding: 8px 20px;
 }
 
 /* Like Button */
 .like-section {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
 }
 
 .like-button {
+  border-radius: 4px;
+  font-size: 5rem;       /* ↓ Smaller text size */
+  padding: 5px;      /* ↓ Less padding around it */
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
 }
+
 
 .like-count {
   font-size: 16px;
@@ -77,28 +76,16 @@
 .liked {
   color: red;
 }
-
 /* Comment Section */
 .comment-section {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.comments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px; 
-  text-align: left;
-}
-
-.comment-author {
-  font-weight: bold;
+  gap: 12px;
 }
 
 .comment-icon {
   cursor: pointer;
-  font-size: 18px;
+  font-size: 20px;
   transition: all 0.2s ease;
 }
 
@@ -133,6 +120,7 @@
 .comment-submit:active {
   transform: scale(0.95);
 }
+
 
 /* Time */
 

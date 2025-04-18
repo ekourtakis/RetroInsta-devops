@@ -26,7 +26,7 @@ const FollowingSidebar: React.FC<FollowingSidebarProps> = ({ followingUserIDs })
     if (followingUserIDs.length > 0) {
       fetchUsers();
     } else {
-      setLoading(false); // no need to load
+      setLoading(false);
     }
   }, [followingUserIDs]);
 
