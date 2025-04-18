@@ -253,27 +253,34 @@ function App() {
       <div className="App">
       <SideBar />
         {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
-        <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
-        <Navbar 
-          user={appUser}
-          authLoading={authLoading}
-          onLoginSuccess={handleLoginSuccess}
-          onLoginError={handleLoginError}
-          onLogout={handleLogout}
-          onToggleCreatePostForm={toggleCreatePostForm}
-          />
-        {isCreatePostFormVisible && (
-          <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
-        )}
-        <div className="Posts">
-          {postsLoading ? <p>Loading posts...</p> : 
-          <PostFeed 
-            posts={posts} 
-            appUser={appUser}
-            userCache={userCache}
-            />}
+          <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
+            <Navbar 
+              user={appUser}
+              authLoading={authLoading}
+              onLoginSuccess={handleLoginSuccess}
+              onLoginError={handleLoginError}
+              onLogout={handleLogout}
+              onToggleCreatePostForm={toggleCreatePostForm}
+            />
+            {isCreatePostFormVisible && (
+              <CreatePostForm onPostSubmit={handleCreatePostSubmit} />
+            )}
+          <div className="Posts">
+            {postsLoading ? (
+              <p>Loading posts...</p>
+            ) : (
+              posts.length > 0 ? (
+                <PostFeed 
+                  posts={posts} 
+                  appUser={appUser}
+                  userCache={userCache} 
+                />
+              ) : (
+                <p>No posts available. Be the first to create one!</p>
+              )
+            )}
+          </div>
         </div>
-      </div>
       </div>
     </GoogleOAuthProvider>
   );

@@ -80,3 +80,34 @@ export const createPost = async (payload: CreatePostPayload): Promise<BackendPos
         throw new Error("An unknown error occurred while creating the post.");
     }
 };
+
+/**
+ * Adds/removed like by user from post
+ * @param postID - The id of the post altered
+ * @param userID - The id of the user who will like/unlike the post
+ */
+export const toggleLikePost = async (postID: string, userID: string): Promise<void> => {
+    if (!postID || !userID) {
+        throw new Error("postID and userID must be defined");
+    }
+
+    // Correct the URL to match the backend route
+    const targetUrl = `${BACKEND_URL}/api/posts/${postID}/like`;
+
+    try {
+        const response = await fetch(targetUrl, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userID })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData?.error || 'Failed to like/unlike post.');
+        }
+
+        console.log(`[API] User ${userID} liked/unliked post ${postID}.`);
+    } catch (error: any) {
+        console.error(`[API] Error for user ${userID} liking/unliking post ${postID}`, error);
+    }
+};
