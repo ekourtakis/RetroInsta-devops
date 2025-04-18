@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./PostComponent.css";
 import { DisplayPost, AddCommentPayload, Comment } from "../../models/Post";
-import { addComment, getCommentsByPostId } from "../../api/comments";
-import { getUserById } from "../../api/users";
 import { followUser } from '../../api/users';
 import { User } from "../../models/User";
 import { toggleLikePost } from "../../api/posts";
@@ -11,9 +9,10 @@ import CommentSection from "../CommentSection/CommentSection";
 interface PostComponentProps {
   post: DisplayPost;
   appUser: User | null;
+  userCache?:React.MutableRefObject<Record<string, User>>;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post, appUser, userCache }) => {
   const { author, imagePath, description, likes: initialLikes, createdAt } = post;
   const username = author?.username || "Unknown User";
   const profilePicPath = author?.profilePicPath;
@@ -106,12 +105,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, appUser }) => {
           </div>
 
           {/* Comment section */}
-          <CommentSection
-            postID={post._id}
-            currentUser={currentUser}
-            userCache={userCache}
-            imagePath={imagePath}
-          />
+          {currentUser && (
+            <CommentSection
+              postID={post._id}
+              currentUser={currentUser}
+              userCache={userCache || { current: {} }} // Provide a default empty cache
+              imagePath={imagePath}
+            />
+          )}
         </div>
         <div className="timestamp">{timestamp}</div>
       </div>
