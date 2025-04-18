@@ -5,36 +5,99 @@ import HomeIcon from '@mui/icons-material/Home';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore'; 
 import PersonIcon from '@mui/icons-material/Person'; 
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { User } from '../../models/User';
+import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton';
 
-const SideBar: React.FC = () => {
+interface SideBarProps {
+  currentUser?: User | null;
+  onAddPostClick: () => void;
+  onLoginSuccess: (decodedToken: any, credentialResponse: any) => void;
+  onLoginError: () => void;
+}
+
+const SideBar: React.FC<SideBarProps> = ({ 
+  currentUser, 
+  onAddPostClick, 
+  onLoginSuccess,
+  onLoginError 
+}) => {
+  const [showLoginPopup, setShowLoginPopup] = React.useState(false);
+
+  const handleProtectedAction = (e: React.MouseEvent) => {
+    if (!currentUser) {
+      e.preventDefault();
+      setShowLoginPopup(true);
+    }
+  };
+
+  const handleCloseLoginPopup = () => {
+    setShowLoginPopup(false);
+  };
+
   return (
     <div className="sidebar">
       <ul className="sidebar-menu">
         <li className="sidebar-item">
           <Link to="/" className="sidebar-link">
-          <HomeIcon className="sidebar-icon" /> 
-              Home
+            <HomeIcon className="sidebar-icon" /> 
+            <span>Home</span>
+            <div className="tooltip">Home</div>
           </Link>
         </li>
         <li className="sidebar-item">
-          <Link to="/explore" className="sidebar-link">
-          <TravelExploreIcon className="sidebar-icon" />
-            Explore
+          <Link 
+            to="/explore" 
+            className="sidebar-link"
+            onClick={handleProtectedAction}
+          >
+            <TravelExploreIcon className="sidebar-icon" />
+            <span>Explore</span>
+            <div className="tooltip">Explore</div>
           </Link>
         </li>
         <li className="sidebar-item">
-          <Link to="/profile" className="sidebar-link">
-          <PersonIcon className="sidebar-icon" />
-           Profile
+          <Link 
+            to={currentUser ? `/profile/${currentUser._id}` : "/login"} 
+            className="sidebar-link"
+            onClick={handleProtectedAction}
+          >
+            <PersonIcon className="sidebar-icon" />
+            <span>Profile</span>
+            <div className="tooltip">Profile</div>
           </Link>
         </li>
-        <li className="sidebar-item">
-          <Link to="/addPost" className="sidebar-link">
-          <AddBoxIcon className="sidebar-icon" />
-            Add Post
-          </Link>
+        <li 
+          className="sidebar-item" 
+          onClick={(e) => {
+            if (!currentUser) {
+              e.preventDefault();
+              setShowLoginPopup(true);
+            } else {
+              onAddPostClick();
+            }
+          }}
+        >
+          <div className="sidebar-link">
+            <AddBoxIcon className="sidebar-icon" />
+            <span>Add Post</span>
+            <div className="tooltip">Add Post</div>
+          </div>
         </li>
       </ul>
+
+      {showLoginPopup && (
+        <div className="login-popup-overlay" onClick={handleCloseLoginPopup}>
+          <div className="login-popup-content" onClick={e => e.stopPropagation()}>
+            <button className="close-button" onClick={handleCloseLoginPopup}>×</button>
+            <h3>Please Login</h3>
+            <p>You need to be logged in to access this feature.</p>
+            <GoogleLoginButton
+              onLoginSuccess={onLoginSuccess}
+              onLoginError={onLoginError}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
