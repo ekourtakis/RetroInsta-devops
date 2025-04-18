@@ -66,22 +66,23 @@ const SideBar: React.FC<SideBarProps> = ({
             <div className="tooltip">Profile</div>
           </Link>
         </li>
-        <li 
-          className="sidebar-item" 
-          onClick={(e) => {
-            if (!currentUser) {
+        <li className="sidebar-item">
+          <Link 
+            to="#"
+            className="sidebar-link"
+            onClick={(e) => {
               e.preventDefault();
-              setShowLoginPopup(true);
-            } else {
-              onAddPostClick();
-            }
-          }}
-        >
-          <div className="sidebar-link">
+              if (!currentUser) {
+                setShowLoginPopup(true);
+              } else {
+                onAddPostClick();
+              }
+            }}
+          >
             <AddBoxIcon className="sidebar-icon" />
             <span>Add Post</span>
             <div className="tooltip">Add Post</div>
-          </div>
+          </Link>
         </li>
       </ul>
 
@@ -92,7 +93,10 @@ const SideBar: React.FC<SideBarProps> = ({
             <h3>Please Login</h3>
             <p>You need to be logged in to access this feature.</p>
             <GoogleLoginButton
-              onLoginSuccess={onLoginSuccess}
+              onLoginSuccess={(decodedToken, credentialResponse) => {
+                onLoginSuccess(decodedToken, credentialResponse);
+                handleCloseLoginPopup();
+              }}
               onLoginError={onLoginError}
             />
           </div>

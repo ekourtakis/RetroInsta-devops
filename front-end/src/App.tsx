@@ -255,8 +255,12 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App">
-      <SideBar currentUser={appUser} 
-      onAddPostClick={toggleCreatePostPopup} />
+        <SideBar 
+          currentUser={appUser} 
+          onAddPostClick={toggleCreatePostPopup}
+          onLoginSuccess={handleLoginSuccess}
+          onLoginError={handleLoginError}
+        />
         {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
         <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
         <Navbar 
