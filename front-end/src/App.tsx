@@ -28,8 +28,13 @@ function App() {
   const [appUser, setAppUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [isCreatePostPopupOpen, setIsCreatePostPopupOpen] = useState(false);
+  const [sortedPosts, setSortedPosts] = useState<DisplayPost[]>([]);
 
   const userCache = useRef<Record<string, User>>({});
+
+  const sortPostsByLikes = useCallback((posts: DisplayPost[]) => {
+    return [...posts].sort((a, b) => b.likes - a.likes);
+  }, []);
 
   const fetchAndProcessPosts = useCallback(async () => {
     console.log("Fetching posts...");
@@ -42,6 +47,7 @@ function App() {
       if (backendPosts.length === 0) {
         console.log("No posts found.");
         setPosts([]);
+        setSortedPosts([]);
         setPostsLoading(false); // Ensure loading state is turned off
         return;
       }
@@ -57,6 +63,7 @@ function App() {
       if (uniqueAuthorIDs.length === 0) {
         console.warn("No valid author IDs found in posts.");
         setPosts([]);
+        setSortedPosts([]);
         setPostsLoading(false); // Ensure loading state is turned off
         return;
       }
@@ -118,15 +125,18 @@ function App() {
 
       console.log(`Processed ${processedPosts.length} posts to display.`);
       setPosts(processedPosts);
+      setSortedPosts(sortPostsByLikes(processedPosts));
+      
       // --- End Process Posts ---
 
     } catch (error) {
       console.error("Error fetching or processing posts:", error);
       setPosts([]); // Clear posts on error
+      setSortedPosts([]); // Clear sorted posts on error
     } finally {
       setPostsLoading(false);
     }
-  }, []); 
+  }, [sortPostsByLikes]); 
   
   // login state
   const handleLogout = useCallback(() => {
@@ -261,8 +271,8 @@ function App() {
           onLoginSuccess={handleLoginSuccess}
           onLoginError={handleLoginError}
         />
-        {/* Main content is wrapped in a container with left margin to avoid overlap with the fixed sidebar */}
-        <div className="main-content" style={{ marginLeft: '220px', padding: '20px' }}>
+        
+        <div className="main-content">
         <Navbar 
           user={appUser}
           authLoading={authLoading}
@@ -281,7 +291,17 @@ function App() {
             />}
         </div>
          } />
-              <Route path="/profile/:userId" element={<Profile userCache={userCache} />} />
+        <Route path="/explore" element={
+          <div className="Posts">
+            {postsLoading ? <p>Loading posts...</p> : 
+            <PostFeed 
+              posts={sortedPosts} 
+              appUser={appUser}
+              userCache={userCache}
+            />}
+          </div>
+        } />
+              <Route path="/profile/:userId" element={<Profile userCache={userCache || {}} />} />
         </Routes>
       </div>
       <CreatePostPopup 
